@@ -18,24 +18,28 @@ function main()
 
     if [[ $1 == "-v" ]]
     then
-        gnome-terminal --tab --title="Server" --command="bash -c 'python3 server.py; exec bash'" \
-        --tab --title="Student" --command="bash -c 'python3 student.py; exec bash'"
+        gnome-terminal \
+        --tab -t "Server" -e "bash -c 'python3 server.py; exec bash'" \
+        --tab -t "Student" -e "bash -c 'python3 student.py; exec bash'"\
+        --active
         exit 0
     fi
 
     if [[ $1 == "-m" ]]
     then
-        gnome-terminal --tab --title="Server" --command="bash -c 'python3 server.py; exec bash'" \
-        --tab --title="Viewer" --command="bash -c 'python3 viewer.py; exec bash'" \
-        --tab --title="Client" --command="bash -c 'python3 client.py; exec bash'"
+        gnome-terminal \
+        --tab -t "Server" -e "bash -c 'python3 server.py; exec bash'" \
+        --tab -t "Viewer" -e "bash -c 'python3 viewer.py; exec bash'" \
+        --tab -t "Client" -e "bash -c 'python3 client.py; exec bash'"
         exit 0
     fi
 
-    gnome-terminal --tab --title="Server" --command="bash -c 'python3 server.py; exec bash'" \
-    --tab --title="Viewer" --command="bash -c 'python3 viewer.py; exec bash'" \
-    --tab --title="Student" --command="bash -c 'python3 student.py; exec bash'"
+    gnome-terminal \
+    --tab -t "Server" -e "bash -c 'python3 server.py; exec bash'" \
+    --tab -t "Viewer" -e "bash -c 'python3 viewer.py; exec bash'" \
+    --tab -t "Student" -e "bash -c 'python3 student.py; exec bash'" \
+    --active
     
-
 }
 
 main "$@"
