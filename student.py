@@ -5,6 +5,7 @@ import os
 import websockets
 from time import sleep
 
+from student.Agent import Agent
 
 def main():
     """Main function."""
@@ -25,6 +26,8 @@ async def agent_loop(server_address="localhost:8000", agent_name="student"):
         # Receive information about static game properties
         await websocket.send(json.dumps({"cmd": "join", "name": agent_name}))
 
+        agent = Agent()
+
         while True:
             try:
                 # receive game update, this must be called timely or your game will get out of sync with the server
@@ -32,8 +35,11 @@ async def agent_loop(server_address="localhost:8000", agent_name="student"):
 
                 print(state)
 
-                # Next lines are only for the Human Agent, the key values are nonetheless the correct ones!
-                key = ""
+                # update agent state
+                await agent.update_state(state)
+
+                # get action from agent
+                key = agent.get_action()
 
                 # send key command to server - you must implement this send in the AI agent
                 await websocket.send(json.dumps({"cmd": "key", "key": key}))

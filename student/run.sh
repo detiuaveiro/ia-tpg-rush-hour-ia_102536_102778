@@ -16,6 +16,9 @@ function main()
     # activate the virtual environment
     source venv/bin/activate
 
+    # delete highscores file
+    rm -f ./highscores.json
+
     if [[ $1 == "-v" ]]
     then
         gnome-terminal \
