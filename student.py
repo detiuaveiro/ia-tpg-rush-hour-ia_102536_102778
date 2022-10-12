@@ -1,4 +1,3 @@
-"""Example client."""
 import asyncio
 import getpass
 import json
@@ -8,7 +7,10 @@ from time import sleep
 
 
 def main():
-    sleep(1)
+    """Main function."""
+
+    sleep(1) # wait for server to start
+
     loop = asyncio.get_event_loop()
     SERVER = os.environ.get("SERVER", "localhost")
     PORT = os.environ.get("PORT", "8000")
