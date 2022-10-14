@@ -1,12 +1,13 @@
+from itertools import count
 import random
 import time
 import sys
 
-state = {'dimensions': [6, 6], 'level': 1, 'grid': '1 oooooooooooooAAooooooooooooooooooooo 5', 'score': -605, 'game_speed': 10, 'cursor': [3, 3], 'selected': '', 'player': 'leo'}
+state = {'dimensions': [6, 6], 'level': 1, 'grid': '1 IBBxooIooLDDJAALooJoKEEMFFKooMGGHHHM 5', 'score': -605, 'game_speed': 10, 'cursor': [3, 3], 'selected': '', 'player': 'leo'}
 
 grid= state['grid'].split(' ')[1]
 
-grid= 'oxoCCCHoDDDMHAAKLMIEEKLMIoJFFoGGJooo'
+grid= 'IBBxooIooLDDJAALooJoKEEMFFKooMGGHHHM'
 
 size = state['dimensions']
 
@@ -77,29 +78,30 @@ def movable_cars(cars, map):
 
 def move_car(car, direction, map):
     # car =['name', x, y, direction, length]
-    if direction == 'r':
-        map[car[2]][car[1]+car[4]] = car[0]
-        map[car[2]][car[1]] = 'o'
-        car[1] += 1
-    elif direction == 'l':
-        map[car[2]][car[1]-1] = car[0]
-        map[car[2]][car[1]+car[4]-1] = 'o'
-        car[1] -= 1
-    elif direction == 'd':
-        map[car[2]+car[4]][car[1]] = car[0]
-        map[car[2]][car[1]] = 'o'
-        car[2] += 1
-    else:
-        map[car[2]-1][car[1]] = car[0]
-        map[car[2]+car[4]-1][car[1]] = 'o'
-        car[2] -= 1
+
+    match direction:
+        case 'r':
+            map[car[2]][car[1]+car[4]] = car[0]
+            map[car[2]][car[1]] = 'o'
+            car[1] += 1
+        case 'l':
+            map[car[2]][car[1]-1] = car[0]
+            map[car[2]][car[1]+car[4]-1] = 'o'
+            car[1] -= 1
+        case 'd':
+            map[car[2]+car[4]][car[1]] = car[0]
+            map[car[2]][car[1]] = 'o'
+            car[2] += 1
+        case 'u':
+            map[car[2]-1][car[1]] = car[0]
+            map[car[2]+car[4]-1][car[1]] = 'o'
+            car[2] -= 1
+
 
 map = get_map(grid)
 
 cars = get_cars(map)
 
-def lst_cp(lst):
-    return [i.copy() for i in lst]
 
 print_map(map)
 # print(cars)
@@ -110,13 +112,57 @@ print_map(map)
 #     print(tup[0][0], tup[1])
 # print()
 
-start = time.time()
-for i in range(100000):
-    tup = random.choice(movable_cars(cars, map))
-    move_car(tup[0], tup[1], map)
+# start = time.time()
+# for i in range(1000000):
+#     tup = random.choice(movable_cars(cars, map))
+#     move_car(tup[0], tup[1], map)
 
-end = time.time()
-print(end-start)
 
-print_map(map)
+# moves=0
+# while map[2][5] != 'A':
+#     tup = random.choice(movable_cars(cars, map))
+#     move_car(tup[0], tup[1], map)
+#     moves+=1
+# print(moves)
 
+# end = time.time()
+# print(end-start)
+
+# print_map(map)
+
+
+# with open('levels.txt', 'r') as f:
+#     for line in f:
+#         level = line.split(' ')
+
+#         start = time.time()
+
+#         print(f"level: {level[0]}")
+#         map = get_map(level[1])
+#         print_map(map)
+#         cars = get_cars(map)
+
+#         moves = 0
+#         while map[2][5] != 'A':
+#             tup = random.choice(movable_cars(cars, map))
+#             move_car(tup[0], tup[1], map)
+#             moves += 1
+#         print(f"moves: {moves}")
+
+#         end = time.time()
+#         print(f"time: {end-start}")
+#         print_map(map)
+
+lst = [[1,2,3],[4,5,6],[7,8,9]]
+
+# start = time.time()
+# for i in range(1000000):
+#     lst_cp= [i.copy() for i in lst]
+# end = time.time()
+# print(end-start)
+
+# start = time.time()
+# for i in range(1000000):
+#     lst_cp= [i[:] for i in lst]
+# end = time.time()
+# print(end-start)

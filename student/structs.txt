@@ -1,0 +1,17 @@
+car = [ letter, x, y, orientation, length ]
+
+cars = [ car1, car2, ... ]
+
+orientation = [ 0, 1 ] # 0 = vertical, 1 = horizontal
+direction = [ 0, 1, 2, 3 ] # 0 = left, 1 = right, 2 = up, 3 = down
+
+movable_cars = [ ( car_idx, direction ), ... ]
+
+
+map =  [['o', 'B', 'B', 'x', 'o', 'o'], 
+        ['I', 'o', 'K', 'o', 'D', 'D'], 
+        ['I', 'o', 'K', 'o', 'A', 'A'], 
+        ['J', 'E', 'E', 'L', 'o', 'M'], 
+        ['J', 'F', 'F', 'L', 'o', 'M'], 
+        ['G', 'G', 'H', 'H', 'H', 'M']]
+
