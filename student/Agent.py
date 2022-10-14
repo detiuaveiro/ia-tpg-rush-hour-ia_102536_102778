@@ -51,14 +51,14 @@ class Agent:
                 if grid[y][x] != 'o' and grid[y][x] != 'x':
                     if y-1 >= 0 and grid[y-1][x] == grid[y][x]:
                         if grid[y][x] not in cars:
-                            cars[grid[y][x]] = [x, y-1, 0, 2]
+                            cars[grid[y][x]] = [x, y-1, 0, 2] # car is vertical
                         else:
-                            cars[grid[y][x]][3] += 1
+                            cars[grid[y][x]][3] += 1 # car length is increased
                     elif x-1 >= 0 and grid[y][x-1] == grid[y][x]:
                         if grid[y][x] not in cars:
-                            cars[grid[y][x]] = [x-1, y, 1, 2]
+                            cars[grid[y][x]] = [x-1, y, 1, 2] # car is horizontal
                         else:
-                            cars[grid[y][x]][3] += 1
+                            cars[grid[y][x]][3] += 1 # car length is increased
         cars_ = [[i, *cars[i]] for i in cars]
         cars_.sort(key=lambda x: x[0])
         return cars_

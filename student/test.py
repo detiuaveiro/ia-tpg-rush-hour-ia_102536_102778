@@ -112,10 +112,10 @@ print_map(map)
 #     print(tup[0][0], tup[1])
 # print()
 
-# start = time.time()
-# for i in range(1000000):
-#     tup = random.choice(movable_cars(cars, map))
-#     move_car(tup[0], tup[1], map)
+start = time.time()
+for i in range(1000000):
+    tup = random.choice(movable_cars(cars, map))
+    move_car(tup[0], tup[1], map)
 
 
 # moves=0
@@ -125,33 +125,32 @@ print_map(map)
 #     moves+=1
 # print(moves)
 
-# end = time.time()
-# print(end-start)
+end = time.time()
+print(end-start)
+print_map(map)
 
-# print_map(map)
 
+# with open('levels.txt', 'r') as f:
+#     for line in f:
+#         level = line.split(' ')
 
-with open('levels.txt', 'r') as f:
-    for line in f:
-        level = line.split(' ')
+#         start = time.time()
 
-        start = time.time()
+#         print(f"level: {level[0]}")
+#         map = get_map(level[1])
+#         print_map(map)
+#         cars = get_cars(map)
 
-        print(f"level: {level[0]}")
-        map = get_map(level[1])
-        print_map(map)
-        cars = get_cars(map)
+#         moves = 0
+#         while map[2][5] != 'A':
+#             tup = random.choice(movable_cars(cars, map))
+#             move_car(tup[0], tup[1], map)
+#             moves += 1
+#         print(f"moves: {moves}")
 
-        moves = 0
-        while map[2][5] != 'A':
-            tup = random.choice(movable_cars(cars, map))
-            move_car(tup[0], tup[1], map)
-            moves += 1
-        print(f"moves: {moves}")
-
-        end = time.time()
-        print(f"time: {end-start}")
-        print_map(map)
+#         end = time.time()
+#         print(f"time: {end-start}")
+#         print_map(map)
 
 # lst = [[1,2,3],[4,5,6],[7,8,9]]
 
