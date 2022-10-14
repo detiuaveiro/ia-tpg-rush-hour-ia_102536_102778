@@ -105,6 +105,7 @@ class Agent:
                 grid[car[2]][car[1]] = 'o'
                 car[2] += 1
   
+
     def print_grid(self, grid):
         print()
         for i in grid:
@@ -112,6 +113,7 @@ class Agent:
                 print(j, end=' ')
             print()
         print()
+
 
     def solve(self):
         """
@@ -125,7 +127,7 @@ class Agent:
             
             if self.test_win(node):
                 print("Found the solution!")
-                return self.get_path(node)
+                return self.get_steps(node)
             
             for car_idx, direction in self.movable_cars(node.cars, node.grid):
                 new_grid = [row.copy() for row in node.grid]
@@ -133,6 +135,7 @@ class Agent:
                 
                 new_node = Node(new_grid, new_cars, node)
                 self.move_car(new_cars[car_idx], direction, new_grid)
+                new_node.move = (car_idx, direction)
 
                 if new_node.grid_str not in nodes:
                     open_nodes.append(new_node)   # pesquisa em largura apenas para teste
@@ -140,16 +143,16 @@ class Agent:
                     
                 
 
-    def get_path(self, node:Node):
+    def get_steps(self, node:Node):
         """
-        Get the path from root to solution
+        Get the steps from root to solution
         """
         if node.parent is None:
-            return [node]
+            return []
         
-        path = self.get_path(node.parent)
-        path += [node]
-        return path
+        steps = self.get_steps(node.parent)
+        steps += [node.move]
+        return steps
     
 
     def test_win(self, node:Node):
@@ -168,5 +171,6 @@ class Agent:
         return choice(["w", "a", "s", "d", " "])
 
 
+    
 
     

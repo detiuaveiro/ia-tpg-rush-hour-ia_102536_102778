@@ -7,6 +7,8 @@ class Node:
         self.parent = parent
         self.grid = grid
         self.cars = cars
+        self.move = None
+
 
     @property
     def grid_str(self):
@@ -14,6 +16,8 @@ class Node:
         Get the grid as a string
         """
         return "".join(["".join(row) for row in self.grid])
+
+    
 
 
     

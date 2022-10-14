@@ -10,10 +10,10 @@ def main():
     start=time.time()
     for i in range(1000000):
         
-        # idx, direction=random.choice(movable_cars1(n_cars, cars, size, grid))
-        # car=cars[idx]
+        idx, direction=random.choice(movable_cars1(n_cars, cars, size, grid))
+        car=cars[idx]
 
-        car, direction=random.choice(movable_cars2(cars, size, grid))
+        # car, direction=random.choice(movable_cars2(cars, size, grid))
 
         move_car(car, direction, grid)
 
@@ -27,7 +27,7 @@ def main2():
         for line in f:
             line= line.split(" ")
 
-            level = 0
+            level = 57
 
             if level != 0 and level != int(line[0]):
                 continue
