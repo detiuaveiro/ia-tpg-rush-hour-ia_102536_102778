@@ -22,9 +22,16 @@ def main():
     print_grid(grid)
 
 def main2():
+    print()
     with open("levels.txt", "r") as f:
         for line in f:
             line= line.split(" ")
+
+            level = 0
+
+            if level != 0 and level != int(line[0]):
+                continue
+            
             size=(6,6)
             grid=get_grid(line[1], size)
             cars=get_cars(grid, size)
