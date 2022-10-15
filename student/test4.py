@@ -85,13 +85,13 @@ pos = get_pos(size, coords)
 
 start = time.time()
 for i in range(10000000):
-    x = 2 == 2
+    x = 1111111111111111111 == 1111111111111111111 
 end= time.time()
 print(f"Time :{end-start}")
 
 start = time.time()
 for i in range(10000000):
-    x = 'a' == 'a'
+    x = 'ooooooooooooAAoooooooooooooooooooooo' == 'ooooooooooooAAoooooooooooooooooooooo'
 end= time.time()
 print(f"Time :{end-start}")
 

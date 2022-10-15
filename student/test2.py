@@ -2,7 +2,7 @@ from Agent import Agent
 import random
 import time
 
-state = {'dimensions': [6, 6], 'level': 1, 'grid': '1 oooooHoxCCoHAAoGoooFoGoooFDDxooooooo 5', 'score': -605, 'game_speed': 10, 'cursor': [3, 3], 'selected': '', 'player': 'leo'}
+state = {'dimensions': [6, 6], 'level': 1, 'grid': '1 BBooKoxDDoKooHAAKooHIJEEFFIJoLoGGGoL 5', 'score': -605, 'game_speed': 10, 'cursor': [3, 3], 'selected': '', 'player': 'leo'}
 
 direction = [ "vertical", "horizontal" ]
 moves= [ "left", "right", "up", "down"]
@@ -24,8 +24,10 @@ cars = agent.start_cars
 print(cars)
 print_grid(grid)
 
+start=time.time()
 arr=agent.solve()
-
+end=time.time()
+print(f"Time: {end-start}")
 print(arr)
 
 

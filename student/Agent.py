@@ -139,13 +139,13 @@ class Agent:
 
                 if new_node.grid_str not in nodes:
                     open_nodes.append(new_node)   # pesquisa em largura apenas para teste
-                    nodes.append(node.grid_str)
+                    nodes.append(new_node.grid_str)
 
 
     def solve2(self):
 
         open_nodes=[self.root]
-        
+
                     
                 
 
