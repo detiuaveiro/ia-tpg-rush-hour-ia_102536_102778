@@ -146,14 +146,14 @@ def get_new_nodes(parent, grid, cars, size, cost):
 
                     new_grid = [i.copy() for i in grid]
                     move_car(car, 'a', new_grid)
-                    new_cars = (cars[:idx] + [[letter, x-1, y, orientation, length]] + cars[idx+1:])
+                    new_cars = (*cars[:idx] , (letter, x-1, y, orientation, length) , *cars[idx+1:])
                     yield (parent, new_grid, new_cars, (letter, 'a'), cost+1)
 
                 if x+length < size[0] and grid[y][x+length] == 'o':             # right
 
                     new_grid = [i.copy() for i in grid]
                     move_car(car, 'd', new_grid)
-                    new_cars = (cars[:idx] + [[letter, x+1, y, orientation, length]] + cars[idx+1:])
+                    new_cars = (*cars[:idx] , (letter, x+1, y, orientation, length) , *cars[idx+1:])
                     yield (parent, new_grid, new_cars, (letter, 'd'), cost+1)
 
             case 'v':   # vertical
@@ -162,12 +162,12 @@ def get_new_nodes(parent, grid, cars, size, cost):
 
                     new_grid = [i.copy() for i in grid]
                     move_car(car, 'w', new_grid)
-                    new_cars = (cars[:idx] + [[letter, x, y-1, orientation, length]] + cars[idx+1:])
+                    new_cars = (*cars[:idx] , (letter, x, y-1, orientation, length) , *cars[idx+1:])
                     yield (parent, new_grid, new_cars, (letter, 'w'), cost+1)
 
                 if y+length < size[1] and grid[y+length][x] == 'o':             # down
 
                     new_grid = [i.copy() for i in grid]
                     move_car(car, 's', new_grid)
-                    new_cars = (cars[:idx] + [[letter, x, y+1, orientation, length]] + cars[idx+1:])
+                    new_cars = (*cars[:idx] , (letter, x, y+1, orientation, length) , *cars[idx+1:])
                     yield (parent, new_grid, new_cars, (letter, 's'), cost+1)
