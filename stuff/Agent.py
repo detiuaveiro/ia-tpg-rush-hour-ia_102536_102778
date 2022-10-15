@@ -119,16 +119,16 @@ def move_car(car, direction, grid):
     """
     letter, x, y, _, length = car
     match direction:
-        case 'a': # left
+        case 'a':                       # left
             grid[y][x-1] = letter
             grid[y][x+length-1] = 'o'
-        case 'd': # right
+        case 'd':                       # right
             grid[y][x+length] = letter
             grid[y][x] = 'o'
-        case 'w': # up
+        case 'w':                        # up
             grid[y-1][x] = letter
             grid[y+length-1][x] = 'o'
-        case 's': # down
+        case 's':                       # down
             grid[y+length][x] = letter
             grid[y][x] = 'o'
 
@@ -142,7 +142,7 @@ def get_new_nodes(parent, grid, cars, size, cost):
         match orientation:
             case 'h':   # horizontal
 
-                if x > 0 and grid[y][x-1] == 'o': # left
+                if x > 0 and grid[y][x-1] == 'o':                               # left
 
                     new_grid = [i.copy() for i in grid]
                     new_cars = cars.copy()
@@ -150,7 +150,7 @@ def get_new_nodes(parent, grid, cars, size, cost):
                     new_cars[idx] = (letter, x-1, y, orientation, length)
                     yield (parent, new_grid, new_cars, (letter, 'a'), cost+1)
 
-                if x+length < size[0] and grid[y][x+length] == 'o': # right
+                if x+length < size[0] and grid[y][x+length] == 'o':             # right
 
                     new_grid = [i.copy() for i in grid]
                     new_cars = cars.copy()
@@ -160,7 +160,7 @@ def get_new_nodes(parent, grid, cars, size, cost):
 
             case 'v':   # vertical
 
-                if y > 0 and grid[y-1][x] == 'o': # up
+                if y > 0 and grid[y-1][x] == 'o':                               # up
 
                     new_grid = [i.copy() for i in grid]
                     new_cars = cars.copy()
@@ -168,7 +168,7 @@ def get_new_nodes(parent, grid, cars, size, cost):
                     new_cars[idx] = (letter, x, y-1, orientation, length)
                     yield (parent, new_grid, new_cars, (letter, 'w'), cost+1)
 
-                if y+length < size[1] and grid[y+length][x] == 'o':
+                if y+length < size[1] and grid[y+length][x] == 'o':             # down
 
                     new_grid = [i.copy() for i in grid]
                     new_cars = cars.copy()
