@@ -140,6 +140,12 @@ class Agent:
                 if new_node.grid_str not in nodes:
                     open_nodes.append(new_node)   # pesquisa em largura apenas para teste
                     nodes.append(node.grid_str)
+
+
+    def solve2(self):
+
+        open_nodes=[self.root]
+        
                     
                 
 
@@ -159,7 +165,7 @@ class Agent:
         """
         Check if the player car found the exit for a given node
         """
-        # return (node.cars[0][1] + node.cars[0][-1] == self.size[0]-1)
+        # return (node.cars[0][1] + node.cars[0][-1] -1 == self.size[0]-1)
         return node.grid[2][5] == 'A'
 
 

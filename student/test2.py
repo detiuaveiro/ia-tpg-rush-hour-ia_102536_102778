@@ -2,7 +2,7 @@ from Agent import Agent
 import random
 import time
 
-state = {'dimensions': [6, 6], 'level': 1, 'grid': '1 ooBoooooBooCAABooCoooooooooooooooooo 5', 'score': -605, 'game_speed': 10, 'cursor': [3, 3], 'selected': '', 'player': 'leo'}
+state = {'dimensions': [6, 6], 'level': 1, 'grid': '1 oooooHoxCCoHAAoGoooFoGoooFDDxooooooo 5', 'score': -605, 'game_speed': 10, 'cursor': [3, 3], 'selected': '', 'player': 'leo'}
 
 direction = [ "vertical", "horizontal" ]
 moves= [ "left", "right", "up", "down"]

@@ -47,94 +47,96 @@ keys= ('A', 'D', 'W', 'S')
 moves= [ "Left", "Right", "Up", "Down"]
 
 
-move_cursor = lambda x, y: [cursor[0]+x, cursor[1]+y]
+def get_action(cursor, selected, car, step, coords):
+    """
+    Get the action to move the car
+    """
 
-all_actions=[]
-for step in solution:
-    actions=[]
-    print_grid(grid)
+    keys = ('a', 'd', 'w', 's')
 
-    car = cars[step[0]]
+    if selected == car[0]:
+        return keys[step[1]], True
+    if selected != '':
+        return ' ', False
+    
+    if cursor[0] > coords[0]:
+        return 'a', False
+    if cursor[0] < coords[0]:
+        return 'd', False
+    if cursor[1] > coords[1]:
+        return 'w', False
+    if cursor[1] < coords[1]:
+        return 's', False
 
-    dists =[]
-    for square in range(car[4]):
-        if car[3]:
-            dists.append(dist([car[1]+square, car[2]], cursor))
+    return ' ', False
+
+
+def actions(grid, cars, cursor, selected, solution):
+
+    selected = selected
+    all_actions = []
+    for step in solution:
+        car = cars[step[0]]
+        dists =[]
+        for square in range(car[4]):
+            if car[3]:
+                dists.append(dist([car[1]+square, car[2]], cursor))
+            else:
+                dists.append(dist([car[1], car[2]+square], cursor))
+        dist_min = min(dists)
+        square = dists.index(dist_min)
+        coords = [car[1]+square, car[2]] if car[3] else [car[1], car[2]+square]
+
+        print_grid(grid)
+        print(f"Cursor: {cursor}")
+        print(f"Selected: {selected}")
+        print(f"Target car: {car[0]} at {coords}")
+
+        actions = []
+        done = False
+        while not done:
+            key, done = get_action(cursor, selected, car, step, coords)
+            actions.append(key)
+            selected = simulate(grid, car, cursor, selected, key)
+        print(f"Actions: {actions}")
+        all_actions+=actions
+    return all_actions
+        
+
+
+def simulate(grid, car, cursor, selected, key):
+    """
+    Simulate the move of a car
+    """
+    if selected == car[0]:
+        if key == 'a':
+            move_car(car, 0, grid)
+            cursor[0] -= 1
+        if key == 'd':
+            move_car(car, 1, grid)
+            cursor[0] += 1
+        if key == 'w':
+            move_car(car, 2, grid)
+            cursor[1] -= 1
+        if key == 's':
+            move_car(car, 3, grid)
+            cursor[1] += 1
+        return selected
+    
+    if key == 'a':
+        cursor[0] -= 1
+    if key == 'd':
+        cursor[0] += 1
+    if key == 'w':
+        cursor[1] -= 1
+    if key == 's':
+        cursor[1] += 1
+    if key == ' ':
+        if selected == '':
+            selected = car[0]
         else:
-            dists.append(dist([car[1], car[2]+square], cursor))
+            selected = ''
+    return selected
 
-    dist_min = min(dists)
-
-    
-    square = dists.index(dist_min)
-    coords = [car[1]+square, car[2]] if car[3] else [car[1], car[2]+square]
-    print(f"Position: {cursor}")
-    print(f"Selected: {selected}")
-    print(f"Target: {car[0]} to {moves[step[1]]}")
-    print(f"Nearest square: {coords}\n")
-
-    while coords != cursor:
-
-        if selected != '' and selected != car[0]:
-            actions.append(' ')
-
-        elif coords[0] < cursor[0]:
-            actions.append('A')
-        elif coords[0] > cursor[0]:
-            actions.append('D')
-        elif coords[1] < cursor[1]:
-            actions.append('W')
-        elif coords[1] > cursor[1]:
-            actions.append('S')
-
-        match actions[-1]:
-            case 'A':
-                cursor = move_cursor(-1, 0)
-            case 'D':
-                cursor = move_cursor(1, 0)
-            case 'W':
-                cursor = move_cursor(0, -1)
-            case 'S':
-                cursor = move_cursor(0, 1)
-            case ' ':
-                selected = ''
-
-    if selected == '':
-        selected = car[0]
-        actions.append(' ')
-
-    
-    selected = car[0]
-
-    match step[1]:
-        case 0:
-            actions.append('A')
-        case 1:
-            actions.append('D')
-        case 2:
-            actions.append('W')
-        case 3:
-            actions.append('S')
-
-    match actions[-1]:
-            case 'A':
-                cursor = move_cursor(-1, 0)
-            case 'D':
-                cursor = move_cursor(1, 0)
-            case 'W':
-                cursor = move_cursor(0, -1)
-            case 'S':
-                cursor = move_cursor(0, 1)
-
-    print(f"ACTIONS: {actions}")
-
-    move_car(car, step[1], grid)
-
-    all_actions += actions
-print(all_actions)
-
-
-
-
-
+print(actions(grid, cars, cursor, selected, solution))
 

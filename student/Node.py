@@ -8,6 +8,7 @@ class Node:
         self.grid = grid
         self.cars = cars
         self.move = None
+        
 
 
     @property
@@ -15,7 +16,7 @@ class Node:
         """
         Get the grid as a string
         """
-        return "".join(["".join(row) for row in self.grid])
+        return hash(str(self.grid))
 
     
 
