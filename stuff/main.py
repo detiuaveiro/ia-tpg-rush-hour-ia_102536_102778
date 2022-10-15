@@ -3,7 +3,7 @@ import time
 
 def main():
 
-    level = 0
+    level = 21
 
     with open("levels.txt") as f:
         for line in f:
