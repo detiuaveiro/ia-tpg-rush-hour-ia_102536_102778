@@ -82,16 +82,27 @@ print_matrix(matrix)
 arr= [*grid_str]
 pos = get_pos(size, coords)
 
+def get_nums():
+    for i in range(10):
+        yield i
+
+def get_nums2():
+    lst = []
+    for i in range(10):
+        lst.append(i)
+    return lst
 
 start = time.time()
-for i in range(10000000):
-    x = 1111111111111111111 == 1111111111111111111 
+for i in range(100000):
+    for j in get_nums():
+        pass
 end= time.time()
 print(f"Time :{end-start}")
 
 start = time.time()
-for i in range(10000000):
-    x = 'ooooooooooooAAoooooooooooooooooooooo' == 'ooooooooooooAAoooooooooooooooooooooo'
+for i in range(100000):
+    for j in get_nums2():
+        pass
 end= time.time()
 print(f"Time :{end-start}")
 
