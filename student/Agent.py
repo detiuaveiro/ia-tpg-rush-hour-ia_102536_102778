@@ -40,8 +40,6 @@ class Agent:
 
             self.task = asyncio.create_task(self.solve())
 
-        self.current_grid = get_grid(state["grid"].split(" ")[1], self.size)
-        self.current_cars = get_cars(self.current_grid, self.size)
 
     
     def update_state(self, state):

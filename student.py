@@ -10,7 +10,7 @@ from student.Agent import Agent
 def main():
     """Main function."""
 
-    sleep(1) # wait for server to start
+    sleep(2) # wait for server to start
 
     loop = asyncio.get_event_loop()
     SERVER = os.environ.get("SERVER", "localhost")
