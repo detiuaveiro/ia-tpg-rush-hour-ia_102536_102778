@@ -40,6 +40,9 @@ class Agent:
 
             self.task = asyncio.create_task(self.solve())
 
+        self.current_grid = get_grid(state["grid"].split(" ")[1], self.size)
+        self.current_cars = get_cars(self.current_grid, self.size)
+
     
     def update_state(self, state):
         """
@@ -50,7 +53,7 @@ class Agent:
 
         if self.level is None or self.level != state["level"]:
 
-            print("NEW LEVEL: ", state["level"])
+            print("\n\n\nNEW LEVEL: ", state["level"], "\n\n\n")
 
             self.level = state["level"]
             self.size = state["dimensions"]
@@ -180,32 +183,32 @@ class Agent:
         if self.selected == '':
             match key:
                 case 'a':
-                    self.cursor = [self.cursor[0]-1, self.cursor[1]]
+                    self.cursor[0] -= 1
                 case 'd':
-                    self.cursor = [self.cursor[0]+1, self.cursor[1]]
+                    self.cursor[0] += 1
                 case 'w':
-                    self.cursor = [self.cursor[0], self.cursor[1]-1]
+                    self.cursor[1] -= 1
                 case 's':
-                    self.cursor = [self.cursor[0], self.cursor[1]+1]
+                    self.cursor[1] += 1
                 case ' ':
                     self.selected = self.current_grid[self.cursor[1]][self.cursor[0]]
         else:
             car = [car for car in self.current_cars if car[0] == self.selected][0]
             match key:
                 case 'a':
-                    self.cursor = [self.cursor[0]-1, self.cursor[1]]
+                    self.cursor[0] -= 1
                     move_car(car, 'a', self.current_grid)
                     car[1] -= 1
                 case 'd':
-                    self.cursor = [self.cursor[0]+1, self.cursor[1]]
+                    self.cursor[0] += 1
                     move_car(car, 'd', self.current_grid)
                     car[1] += 1
                 case 'w':
-                    self.cursor = [self.cursor[0], self.cursor[1]-1]
+                    self.cursor[1] -= 1
                     move_car(car, 'w', self.current_grid)
                     car[2] -= 1
                 case 's':
-                    self.cursor = [self.cursor[0], self.cursor[1]+1]
+                    self.cursor[1] += 1
                     move_car(car, 's', self.current_grid)
                     car[2] += 1
                 case ' ':

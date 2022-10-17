@@ -77,7 +77,7 @@ def move_car(car, direction, grid):
         case 'd':                       # right
             grid[y][x+length] = letter
             grid[y][x] = 'o'
-        case 'w':                        # up
+        case 'w':                       # up
             grid[y-1][x] = letter
             grid[y+length-1][x] = 'o'
         case 's':                       # down

@@ -27,15 +27,12 @@ async def agent_loop(server_address="localhost:8000", agent_name="student"):
         await websocket.send(json.dumps({"cmd": "join", "name": agent_name}))
 
         agent = Agent()
+        moves={'a': 'left', 'd': 'right', 'w': 'up', 's': 'down', ' ': 'space', '':'none'}
 
         while True:
             try:
                 # receive game update, this must be called timely or your game will get out of sync with the server
                 state = json.loads(await websocket.recv())  
-
-                # print(state)
-
-                moves={'a': 'left', 'd': 'right', 'w': 'up', 's': 'down', ' ': 'space', '':'none'}
 
                 # update agent state
                 agent.update(state)
