@@ -1,5 +1,5 @@
 import asyncio
-from stuff.Functions import *
+from student.Functions import *
 
 # car = ( letter, x, y, orientation, length )
 # node = ( parent, grid, cars, action, cost )
