@@ -1,59 +1,4 @@
-import heapq
-
-
-# car = ( letter, x, y, orientation, length )
-# node = ( parent, grid, cars, action, cost )
-
-class Agent:
-
-    def __init__(self):
-        """
-        Agent constructor
-        """
-        self.cursor = None
-        self.selected = None
-        self.level = None
-        self.size = None
-        self.current_grid = None
-        self.current_cars = None
-
-        self.root = None
-
-    
-    def update_state(self, state):
-        """
-        Update agent state
-        """
-        self.cursor = state["cursor"]
-        self.selected = state["selected"]
-
-        if self.level is None or self.level != state["level"]:
-            self.level = state["level"]
-            self.size = state["dimensions"]
-            self.current_grid = get_grid(state["grid"].split(" ")[1], self.size)
-            self.current_cars = get_cars(self.current_grid, self.size)
-
-            self.root = (None, self.current_grid, self.current_cars, None, 0)
-
-
-    def solve(self):
-        """
-        Get best path to solution
-        """
-        open_nodes = [self.root]
-        nodes = [str(self.root[1])]
-
-        while True:
-            node = open_nodes.pop(0)
-
-            if test_win(node[1]):
-                return get_path(node)
-
-            for new_node in get_new_nodes(node, node[1], node[2], self.size , node[4]):
-                if str(new_node[1]) not in nodes:
-                    nodes.append(str(new_node[1]))
-                    open_nodes.append(new_node)
-                    
+from math import dist
 
 def get_path(node):
     """
@@ -76,6 +21,13 @@ def get_grid(str, size):
     Get the grid from a string
     """
     return [[*str[i*size[0]:i*size[0]+size[0]]] for i in range(size[1])]
+
+
+def get_str(grid):
+    """
+    Get the string from the grid
+    """
+    return ''.join([''.join(i) for i in grid])
 
 
 def print_grid(grid):
@@ -133,10 +85,11 @@ def move_car(car, direction, grid):
             grid[y][x] = 'o'
 
 
-def get_new_nodes(parent, grid, cars, size, cost):
+def get_new_nodes(parent, size):
     """
     Calculate new nodes
     """
+    grid, cars, cost = parent[1], parent[2], parent[4]
     for idx, car in enumerate(cars):
         letter, x, y, orientation, length = car
         match orientation:
@@ -144,14 +97,14 @@ def get_new_nodes(parent, grid, cars, size, cost):
 
                 if x > 0 and grid[y][x-1] == 'o':                               # left
 
-                    new_grid = [i.copy() for i in grid]
+                    new_grid = [[*i] for i in grid]
                     move_car(car, 'a', new_grid)
                     new_cars = (*cars[:idx] , (letter, x-1, y, orientation, length) , *cars[idx+1:])
                     yield (parent, new_grid, new_cars, (letter, 'a'), cost+1)
 
                 if x+length < size[0] and grid[y][x+length] == 'o':             # right
 
-                    new_grid = [i.copy() for i in grid]
+                    new_grid = [[*i] for i in grid]
                     move_car(car, 'd', new_grid)
                     new_cars = (*cars[:idx] , (letter, x+1, y, orientation, length) , *cars[idx+1:])
                     yield (parent, new_grid, new_cars, (letter, 'd'), cost+1)
@@ -160,14 +113,15 @@ def get_new_nodes(parent, grid, cars, size, cost):
 
                 if y > 0 and grid[y-1][x] == 'o':                               # up
 
-                    new_grid = [i.copy() for i in grid]
+                    new_grid = [[*i] for i in grid]
                     move_car(car, 'w', new_grid)
                     new_cars = (*cars[:idx] , (letter, x, y-1, orientation, length) , *cars[idx+1:])
                     yield (parent, new_grid, new_cars, (letter, 'w'), cost+1)
 
                 if y+length < size[1] and grid[y+length][x] == 'o':             # down
 
-                    new_grid = [i.copy() for i in grid]
+                    new_grid = [[*i] for i in grid]
                     move_car(car, 's', new_grid)
                     new_cars = (*cars[:idx] , (letter, x, y+1, orientation, length) , *cars[idx+1:])
                     yield (parent, new_grid, new_cars, (letter, 's'), cost+1)
+          

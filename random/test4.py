@@ -1,6 +1,7 @@
 import ctypes
 import sys
 import time
+import dataclasses
 
 grid_str = "IBBxooIooLDDJAALooJoKEEMFFKooMGGHHHM"
 # grid_str = "ABCDEFGHIJKLMNKOPQRSTUVWXYZooooooooo"
@@ -63,6 +64,7 @@ letters2 = {v: k for k, v in letters.items()}
 
 print(f"String :{grid_str}")
 print(f"Grid :{hex(grid)}")
+print(f"Number :{grid}")
 print(letters)
 
 coords = [3, 1]
@@ -82,32 +84,19 @@ print_matrix(matrix)
 arr= [*grid_str]
 pos = get_pos(size, coords)
 
-def get_nums():
-    for i in range(10):
-        yield i
-
-def get_nums2():
-    lst = []
-    for i in range(10):
-        lst.append(i)
-    return lst
 
 start = time.time()
-for i in range(100000):
-    for j in get_nums():
-        pass
+for i in range(1000000):
+    matrix_cp = [[*i] for i in matrix]
+    
 end= time.time()
 print(f"Time :{end-start}")
 
 start = time.time()
-for i in range(100000):
-    for j in get_nums2():
-        pass
+for i in range(1000000):
+    matrix_cp = [i.copy() for i in matrix]
 end= time.time()
 print(f"Time :{end-start}")
 
-# matrix_cp = [i.copy() for i in matrix]
 
-# print(hash(str(matrix_cp)))
-# print(hash(str(matrix)))
 

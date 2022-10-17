@@ -1,5 +1,8 @@
-from random import choice
-from Node import Node
+import asyncio
+from stuff.Functions import *
+
+# car = ( letter, x, y, orientation, length )
+# node = ( parent, grid, cars, action, cost )
 
 class Agent:
 
@@ -7,176 +10,203 @@ class Agent:
         """
         Agent constructor
         """
+        self.cursor = None
+        self.selected = None
         self.level = None
         self.size = None
-        self.cursor = None
-        self.start_grid = None
-        self.start_cars = None
-        self.n_cars = None
+        self.current_grid = None
+        self.current_cars = None
+
         self.root = None
 
+        self.solution = None
 
+        self.task = None
+
+
+    def update(self, state):
+        """
+        Update agent state and get best path to solution
+        """
+        if self.update_state(state):
+
+            if self.task is not None:
+                self.task.cancel()
+
+            self.current_grid = get_grid(state["grid"].split(" ")[1], self.size)
+            self.current_cars = get_cars(self.current_grid, self.size)
+            self.root = (None, self.current_grid, self.current_cars, None, 0)
+            self.solution = None            
+
+            self.task = asyncio.create_task(self.solve())
+
+    
     def update_state(self, state):
         """
-        Update the state of the agent
+        Update agent state
         """
+        self.cursor = state["cursor"]
+        self.selected = state["selected"]
+
         if self.level is None or self.level != state["level"]:
+
+            print("NEW LEVEL: ", state["level"])
 
             self.level = state["level"]
             self.size = state["dimensions"]
-            self.cursor = state["cursor"]
-            self.start_grid = self.get_grid(state["grid"].split(" ")[1])
-            self.start_cars = self.get_cars(self.start_grid)
-            self.n_cars = len(self.start_cars)
+
+            return True
+
+        # TODO se o mapa mudar ( houve movimento random )
+        if get_str(self.current_grid) != state["grid"].split(" ")[1]:
             
-            self.root = Node(self.start_grid, self.start_cars, None)
+            print("\n\nMOVIMENTO RANDOM")
+            print_grid(self.current_grid)
+            print_grid(get_grid(state["grid"].split(" ")[1], self.size))
 
-            # self.solve()
+            return True
+
+        return False            
 
 
-    def get_grid(self, str):
+    async def solve(self):
         """
-        Get the grid from a string
-        """
-        return [[*str[i*self.size[0]:i*self.size[0]+self.size[0]]] for i in range(self.size[1])]
-
-
-    def get_cars(self, grid):
-        """
-        Get the cars from grid
-        """
-        cars = {}
-        for y in range(self.size[1]):
-            for x in range(self.size[0]):
-                if grid[y][x] != 'o' and grid[y][x] != 'x':
-                    if y-1 >= 0 and grid[y-1][x] == grid[y][x]:
-                        if grid[y][x] not in cars:
-                            cars[grid[y][x]] = [x, y-1, 0, 2] # car is vertical
-                        else:
-                            cars[grid[y][x]][3] += 1 # car length is increased
-                    elif x-1 >= 0 and grid[y][x-1] == grid[y][x]:
-                        if grid[y][x] not in cars:
-                            cars[grid[y][x]] = [x-1, y, 1, 2] # car is horizontal
-                        else:
-                            cars[grid[y][x]][3] += 1 # car length is increased
-        cars_ = [[i, *cars[i]] for i in cars]
-        cars_.sort(key=lambda x: x[0])
-        return cars_
-
-    
-    def movable_cars(self, cars, grid):
-        """
-        Get a list of movable cars and where they can move
-        """
-        movable=[]
-        for i in range(self.n_cars):
-            if cars[i][3]: # if car is horizontal
-                if cars[i][1]-1 >= 0 and grid[cars[i][2]][cars[i][1]-1] == 'o':
-                    movable.append((i, 0)) # 0 = left
-                if cars[i][1]+cars[i][4] < self.size[0] and grid[cars[i][2]][cars[i][1]+cars[i][4]] == 'o':
-                    movable.append((i, 1)) # 1 = right
-            else: # if car is vertical
-                if cars[i][2]-1 >= 0 and grid[cars[i][2]-1][cars[i][1]] == 'o':
-                    movable.append((i, 2)) # 2 = up
-                if cars[i][2]+cars[i][4] < self.size[1] and grid[cars[i][2]+cars[i][4]][cars[i][1]] == 'o':
-                    movable.append((i, 3)) # 3 = down
-        return movable
-        
-
-    def move_car(self, car, direction, grid):
-        """
-        Move a car in a given direction
-        """
-        match direction:
-            case 0: # left
-                grid[car[2]][car[1]-1] = car[0]
-                grid[car[2]][car[1]+car[4]-1] = 'o'
-                car[1] -= 1
-            case 1: # right
-                grid[car[2]][car[1]+car[4]] = car[0]
-                grid[car[2]][car[1]] = 'o'
-                car[1] += 1
-            case 2: # up
-                grid[car[2]-1][car[1]] = car[0]
-                grid[car[2]+car[4]-1][car[1]] = 'o'
-                car[2] -= 1
-            case 3: # down
-                grid[car[2]+car[4]][car[1]] = car[0]
-                grid[car[2]][car[1]] = 'o'
-                car[2] += 1
-  
-
-    def print_grid(self, grid):
-        print()
-        for i in grid:
-            for j in i:
-                print(j, end=' ')
-            print()
-        print()
-
-
-    def solve(self):
-        """
-        Find the solution
+        Get best path to solution
         """
         open_nodes = [self.root]
-        nodes = [self.root.grid_str]
-        
-        while open_nodes != []:
+        nodes = [str(self.root[1])]
+
+        while True:
             node = open_nodes.pop(0)
-            
-            if self.test_win(node):
-                print("Found the solution!")
-                return self.get_steps(node)
-            
-            for car_idx, direction in self.movable_cars(node.cars, node.grid):
-                new_grid = [row.copy() for row in node.grid]
-                new_cars = [car.copy() for car in node.cars]
-                
-                new_node = Node(new_grid, new_cars, node)
-                self.move_car(new_cars[car_idx], direction, new_grid)
-                new_node.move = (car_idx, direction)
 
-                if new_node.grid_str not in nodes:
-                    open_nodes.append(new_node)   # pesquisa em largura apenas para teste
-                    nodes.append(new_node.grid_str)
+            if test_win(node[1]):
+                print("SOLVED")
+                self.solution = self.calculate_solution(get_path(node))
+                return
+
+            for new_node in get_new_nodes(node, self.size):
+                if str(new_node[1]) not in nodes:
+                    nodes.append(str(new_node[1]))
+                    open_nodes.append(new_node)
 
 
-    def solve2(self):
 
-        open_nodes=[self.root]
-
-                    
-                
-
-    def get_steps(self, node:Node):
+    def calculate_solution(self, path):
         """
-        Get the steps from root to solution
+        Calculate solution
         """
-        if node.parent is None:
-            return []
+
+        print(f"Path: {path}")
+
+        for move in path:
+            yield from self.next_actions(move)
+
+    
+    def action(self):
+        """
+        Get next action
+        """
+        if self.solution is None:
+            return ''
+
+        try:
+            key = next(self.solution)
+            self.simulate(key)
+            return key
+        except StopIteration:
+            return ''
+
+
+    def next_actions(self, move):
+        """
+        Get the next keys
+        """
+        print(self.current_cars)
+        car = [car for car in self.current_cars if car[0] == move[0]][0]
+        coords= self.nearest_square(car)
+
+        print_grid(self.current_grid)
+        print(f"Cursor: {self.cursor}")
+        print(f"Selected: {self.selected}")
+        print(f"Target car: {car[0]} at {coords}")
+
+        while True:
         
-        steps = self.get_steps(node.parent)
-        steps += [node.move]
-        return steps
-    
+            if self.selected == car[0]:
+                yield move[1]           # move the car
+                break
+            elif self.selected != '':
+                yield ' '               # deselect the car
+            elif self.cursor[0] > coords[0]:
+                yield 'a'               # move cursor left
+            elif self.cursor[0] < coords[0]:
+                yield 'd'               # move cursor right
+            elif self.cursor[1] > coords[1]:
+                yield 'w'               # move cursor up
+            elif self.cursor[1] < coords[1]:
+                yield 's'               # move cursor down
+            elif self.selected == '':
+                yield ' '               # select the car
 
-    def test_win(self, node:Node):
+
+    def nearest_square(self, car):
         """
-        Check if the player car found the exit for a given node
+        Nearest car square from cursor
         """
-        # return (node.cars[0][1] + node.cars[0][-1] -1 == self.size[0]-1)
-        return node.grid[2][5] == 'A'
+        dists =[]
+        for square in range(car[4]):
+            match car[3]:
+                case 'v':
+                    dists.append(dist(self.cursor, (car[1], car[2] + square)))
+                case 'h':
+                    dists.append(dist(self.cursor, (car[1] + square, car[2])))
+
+        dist_min = min(dists)
+        square = dists.index(dist_min)
+       
+        match car[3]:
+            case 'v':    
+                return [car[1], car[2]+square]
+            case 'h':
+                return [car[1]+square, car[2]]
+                
 
 
-    def get_action(self):
-        return self.get_random_action()
+    def simulate(self,key):
+        """
+        Simulate the move of a car
+        """
 
-
-    def get_random_action(self):
-        return choice(["w", "a", "s", "d", " "])
-
-
-    
-
-    
+        if self.selected == '':
+            match key:
+                case 'a':
+                    self.cursor = [self.cursor[0]-1, self.cursor[1]]
+                case 'd':
+                    self.cursor = [self.cursor[0]+1, self.cursor[1]]
+                case 'w':
+                    self.cursor = [self.cursor[0], self.cursor[1]-1]
+                case 's':
+                    self.cursor = [self.cursor[0], self.cursor[1]+1]
+                case ' ':
+                    self.selected = self.current_grid[self.cursor[1]][self.cursor[0]]
+        else:
+            car = [car for car in self.current_cars if car[0] == self.selected][0]
+            match key:
+                case 'a':
+                    self.cursor = [self.cursor[0]-1, self.cursor[1]]
+                    move_car(car, 'a', self.current_grid)
+                    car[1] -= 1
+                case 'd':
+                    self.cursor = [self.cursor[0]+1, self.cursor[1]]
+                    move_car(car, 'd', self.current_grid)
+                    car[1] += 1
+                case 'w':
+                    self.cursor = [self.cursor[0], self.cursor[1]-1]
+                    move_car(car, 'w', self.current_grid)
+                    car[2] -= 1
+                case 's':
+                    self.cursor = [self.cursor[0], self.cursor[1]+1]
+                    move_car(car, 's', self.current_grid)
+                    car[2] += 1
+                case ' ':
+                    self.selected = ''

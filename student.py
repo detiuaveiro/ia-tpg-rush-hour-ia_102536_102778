@@ -33,13 +33,16 @@ async def agent_loop(server_address="localhost:8000", agent_name="student"):
                 # receive game update, this must be called timely or your game will get out of sync with the server
                 state = json.loads(await websocket.recv())  
 
-                print(state)
+                # print(state)
+
+                moves={'a': 'left', 'd': 'right', 'w': 'up', 's': 'down', ' ': 'space', '':'none'}
 
                 # update agent state
-                await agent.update_state(state)
+                agent.update(state)
 
                 # get action from agent
-                key = agent.get_action()
+                key = agent.action()
+                print(f"Action: {moves[key]}")
 
                 # send key command to server - you must implement this send in the AI agent
                 await websocket.send(json.dumps({"cmd": "key", "key": key}))
