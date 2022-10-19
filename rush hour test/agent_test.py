@@ -6,7 +6,7 @@ def main():
 
     state = {"level": 1, "selected":'', "dimensions": [6, 6], "cursor": [3, 3], "grid": "01 BBCCMxEEELMNAAKLoNooKFFoJGGoooJHHIIo 5"}
 
-    level = 57
+    level = 21
 
     agent = Agent()
 
@@ -18,7 +18,7 @@ def main():
             if level != 0 and level != int(line.split(" ")[0]):
                 continue
 
-            print("\nLevel: ", level)
+            print("\nLevel: ", line.split(" ")[0])
 
             agent.level = state["level"]
             agent.size = state["dimensions"]
