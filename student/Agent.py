@@ -51,7 +51,7 @@ class Agent:
 
         if self.level is None or self.level != state["level"]:
 
-            print("\n\n\nNEW LEVEL: ", state["level"], "\n\n\n")
+            # print("\n\n\nNEW LEVEL: ", state["level"], "\n\n\n")
 
             self.level = state["level"]
             self.size = state["dimensions"]
@@ -90,6 +90,9 @@ class Agent:
                     nodes.append(str(new_node[1]))
                     open_nodes.append(new_node)
 
+    
+    def solve2(self):
+        return []
 
 
     def calculate_solution(self, path):

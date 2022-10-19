@@ -27,7 +27,7 @@ def main2():
         for line in f:
             line= line.split(" ")
 
-            level = 21
+            level = 4
 
             if level != 0 and level != int(line[0]):
                 continue
