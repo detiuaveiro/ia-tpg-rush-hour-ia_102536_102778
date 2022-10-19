@@ -75,7 +75,7 @@ class Agent:
         Get best path to solution
         """
         open_nodes = [self.root]
-        nodes = [str(self.root[1])]
+        nodes = {get_str(self.root[1])}
 
         while True:
             node = open_nodes.pop(0)
@@ -86,8 +86,9 @@ class Agent:
                 return
 
             for new_node in get_new_nodes(node, self.size):
-                if str(new_node[1]) not in nodes:
-                    nodes.append(str(new_node[1]))
+                new_str = get_str(new_node[1])
+                if new_str not in nodes:
+                    nodes.add(new_str)
                     open_nodes.append(new_node)
 
     
