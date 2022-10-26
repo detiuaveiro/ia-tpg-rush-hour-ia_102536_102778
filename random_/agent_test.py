@@ -1,5 +1,6 @@
 import time
 from Agent import Agent
+from Node import Node 
 from Functions import *
 import sys
 
@@ -8,7 +9,7 @@ import sys
 
 def main():
 
-    sys.setrecursionlimit(1000000)
+    # sys.setrecursionlimit(1000000)
 
     state = {"level": 1, "selected":'', "dimensions": [6, 6], "cursor": [3, 3], "grid": "01 BBCCMxEEELMNAAKLoNooKFFoJGGoooJHHIIo 5"}
 
@@ -17,7 +18,6 @@ def main():
     agent = Agent()
 
     total_times=0
-
     with open("levels.txt") as f:
         for line in f:
             
@@ -32,26 +32,20 @@ def main():
             agent.size = state["dimensions"]
             agent.current_grid = get_grid(line.split(" ")[1], agent.size)
             agent.current_cars = get_cars(agent.current_grid, agent.size)
-            agent.root=(None, agent.current_grid, agent.current_cars, None, 0)
 
+            agent.root=(None, agent.current_grid, agent.current_cars, None, 0)
+            # agent.root= Node(agent.current_grid, agent.current_cars, None, 0)
 
             start = time.time()
             path= agent.solve()
+            # path=agent.solve2()
             end = time.time()
 
             total_times += end-start
 
-            n_keys= 0
-            for key in agent.calculate_solution(path):
-                agent.simulate(key)
-                if agent.current_grid[2][5] == 'A':
-                    break
-                n_keys += 1
-
             print("Time: ", end-start)
-            # print("Path: ", path)
+            print("Path: ", path)
             print("Moves: ", len(path))
-            print("Number of keys: ", n_keys)
 
 
     print("Total Time: ", total_times)

@@ -5,19 +5,9 @@ import os
 import websockets
 from time import sleep
 
-from student.Agent import Agent
+from random_.Agent0 import Agent
 
-def main():
-    """Main function."""
-
-    sleep(2) # wait for server to start
-
-    loop = asyncio.get_event_loop()
-    SERVER = os.environ.get("SERVER", "localhost")
-    PORT = os.environ.get("PORT", "8000")
-    NAME = os.environ.get("NAME", getpass.getuser())
-    loop.run_until_complete(agent_loop(f"{SERVER}:{PORT}", NAME))
-
+sleep(1)
 
 async def agent_loop(server_address="localhost:8000", agent_name="student"):
     """Example client loop."""
@@ -49,5 +39,11 @@ async def agent_loop(server_address="localhost:8000", agent_name="student"):
                 return
 
 
-if __name__ == "__main__":
-    main()
+# DO NOT CHANGE THE LINES BELLOW
+# You can change the default values using the command line, example:
+# $ NAME='arrumador' python3 client.py
+loop = asyncio.get_event_loop()
+SERVER = os.environ.get("SERVER", "localhost")
+PORT = os.environ.get("PORT", "8000")
+NAME = os.environ.get("NAME", getpass.getuser())
+loop.run_until_complete(agent_loop(f"{SERVER}:{PORT}", NAME))

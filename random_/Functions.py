@@ -124,4 +124,51 @@ def get_new_nodes(parent, size):
                     move_car(car, 's', new_grid)
                     new_cars = (*cars[:idx] , (letter, x, y+1, orientation, length) , *cars[idx+1:]) # copy the cars with the change
                     yield (parent, new_grid, new_cars, (letter, 's'), cost+1)
-          
+
+
+def cost(cursor, selected, car, direction):
+
+    letter, x, y, orientation, length = car
+
+    if selected == letter:
+        return 1
+
+    x_,y_ = x,y
+    distance = 99
+    match orientation:
+        case 'h':   # horizontal
+            for i in range(length):
+                dist = abs(x+i - cursor[0]) + abs(y - cursor[1])
+                if dist < distance:
+                    distance = dist
+                    x_ += 1
+        case 'v':   # vertical
+            for i in range(length):
+                dist = abs(x - cursor[0]) + abs(y+i - cursor[1])
+                if dist < distance:
+                    distance = dist
+                    y_ += 1
+    
+    match direction:
+        case 'a':   # left
+            x_ -= 1
+        case 'd':   # right
+            x_ += 1
+        case 'w':   # up
+            y_ -= 1
+        case 's':   # down
+            y_ += 1
+
+    cursor[0] = x_
+    cursor[1] = y_
+    
+    return distance + 3
+
+    
+def cost2(cursor, selected, car):
+    if selected == car[0]:
+        return 1
+
+    return abs(cursor[0] - car[1]) + abs(cursor[1] - car[2]) + 3
+
+    
