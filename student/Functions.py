@@ -5,12 +5,10 @@ def print_board(board, size):
     """
     Print board
     """
-    print()
     for i in range(size):
         for j in range(size):
             print(board[i * size + j], end=' ')
         print()
-    print()
 
 
 def get_cars(board, size):
@@ -97,7 +95,6 @@ def get_path(node):
     """
     path = []
     while node.parent:
-        path.append(node.action)
+        path.insert(0, node.action)
         node = node.parent
-    path.reverse()
     return path

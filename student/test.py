@@ -23,6 +23,7 @@ def main():
             print("\nLevel: ", line.split(" ")[0])
 
             board= [*line.split(" ")[1]]
+            print_board(board, 6)
 
             agent.selected= ''
             agent.cursor = [3, 3]

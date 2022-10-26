@@ -32,9 +32,10 @@ class Agent:
 
         while True:
             node = heapq.heappop(open_nodes)
-            # node = open_nodes.pop(0)
 
             if test_win(node, win_pos):
+                print("Solved")
+                print(f"Total nodes: {len(nodes)}")
                 return get_path(node)
 
             for new_node in node.expand(self.size):
@@ -42,5 +43,4 @@ class Agent:
                 if new_str not in nodes:
                     nodes.add(new_str)
                     heapq.heappush(open_nodes, new_node)
-                    # open_nodes.append(new_node)
     
