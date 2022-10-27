@@ -52,7 +52,7 @@ def main():
         if test_win(grid):
             break
 
-        if count%2 == 0:
+        if count%1 >= 0:
             grid_cp = [[*i] for i in grid]
             car, direction=random.choice(movable_cars2(cars, size, grid_cp))
             print("Random move: ", car[0], direction)

@@ -50,7 +50,7 @@ class Node:
             new_board[y * size + x] = 'o'
             # change car
             y += 1
-            
+
         # copy the cars
         new_cars = [*self.cars]
         # change car
@@ -100,4 +100,3 @@ class Node:
         String representation of node
         """
         return ''.join(self.board)
-

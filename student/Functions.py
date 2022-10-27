@@ -1,5 +1,9 @@
 
 # car = ( letter, x, y, orientation, length )
+# y = idx // size
+# x = idx % size
+# idx = y * size + x
+
 
 def print_board(board, size):
     """
@@ -11,38 +15,55 @@ def print_board(board, size):
         print()
 
 
-def get_cars(board, size):
+def print_grid(grid):
     """
-    Get cars from board
+    Print grid
     """
-    # letter : [x, y, orientation, length]
+    for i in range(len(grid)):
+        for j in range(len(grid)):
+            print(grid[i][j], end=' ')
+        print()
+
+
+def get_grid(str_, size):
+        """
+        Get grid
+        """
+        # convert board to 2D
+        return [[*str_[i:i+size]] for i in range(0, len(str_), size)]
+
+
+
+def get_cars(grid, size):
+    """
+    Get cars from grid
+    """
+    # letter : [ x, y, orientation, length ]
     cars = {}
-
-    # loop through board
-    for idx, letter in enumerate(board):
-        
-        # letter can be a car
-        if letter != 'o' and letter != 'x':
-
-            # car is horizontal
-            if idx % size -1 >= 0 and board[idx-1] == letter:
-
-                if letter not in cars:
-                    # add new car
-                    cars[letter] = [idx % size -1 , idx // size, 'h', 2]
-                else:
-                    # increase car length
-                    cars[letter][3] += 1
-
-            # car is vertical
-            elif idx // size -1 >= 0 and board[idx-size] == letter:
-
-                if letter not in cars:
-                    # add new car
-                    cars[letter] = [idx % size, idx // size -1, 'v', 2]
-                else:
-                    # increase car length
-                    cars[letter][3] += 1
+    # loop through grid
+    for y in range(size):
+        for x in range(size):
+            letter = grid[y][x]
+            # letter can be a car
+            if letter != 'o' and letter != 'x':
+                # car is horizontal
+                if x + 1 < size and grid[y][x + 1] == letter:
+                    # check if car is already in cars
+                    if letter not in cars:
+                        # add new car
+                        cars[letter] = [x, y, 'h', 2]
+                    else:
+                        # increase car length
+                        cars[letter][3] += 1
+                # car is vertical
+                elif y + 1 < size and grid[y + 1][x] == letter:
+                    # check if car is already in cars
+                    if letter not in cars:
+                        # add new car
+                        cars[letter] = [x, y, 'v', 2]
+                    else:
+                        # increase car length
+                        cars[letter][3] += 1
 
     # convert cars to list and sort by letter
     # [[letter, x, y, orientation, length], ...]
@@ -51,42 +72,11 @@ def get_cars(board, size):
     return cars_
 
 
-def move_car(board, car, direction, size):
-    """
-    Change the board with a car move
-    """
-    letter, x, y, _, length = car
-
-    # left 
-    if direction == 'a':  
-        # change board  
-        board[y * size + x - 1] = letter
-        board[y * size + x + length - 1] = 'o'
-
-    # right
-    elif direction == 'd':  
-        # change board
-        board[y * size + x + length] = letter
-        board[y * size + x] = 'o'
-
-    # up
-    elif direction == 'w': 
-        # change board 
-        board[(y - 1) * size + x] = letter
-        board[(y + length - 1) * size + x] = 'o'
-
-    # down
-    elif direction == 's':  
-        # change board
-        board[(y + length) * size + x] = letter
-        board[y * size + x] = 'o'
-
-
-def test_win(node, pos):
+def test_win(car, pos):
     """
     Check if the board is solved
     """
-    return node.cars[0][1] == pos
+    return car[1] == pos
 
 
 def get_path(node):
@@ -98,3 +88,39 @@ def get_path(node):
         path.insert(0, node.action)
         node = node.parent
     return path
+
+
+def move_car(grid, car, direction):
+    """
+    Move the car and change the grid
+    """
+    letter, x, y, _, length = car
+
+    # left
+    if direction == 'a':
+        # change grid
+        grid[y][x-1] = letter
+        grid[y][x+length-1] = 'o'
+        # move car
+        car[1] -= 1
+    # right
+    elif direction == 'd':
+        # change grid
+        grid[y][x+length] = letter
+        grid[y][x] = 'o'
+        # move car
+        car[1] += 1
+    # up
+    elif direction == 'w':
+        # change grid
+        grid[y-1][x] = letter
+        grid[y+length-1][x] = 'o'
+        # move car
+        car[2] -= 1
+    # down
+    else:
+        # change grid
+        grid[y+length][x] = letter
+        grid[y][x] = 'o'
+        # move car
+        car[2] += 1

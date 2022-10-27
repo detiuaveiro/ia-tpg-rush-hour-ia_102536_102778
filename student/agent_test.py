@@ -9,7 +9,7 @@ def main():
 
     state = {"level": 1, "selected":'', "dimensions": [6, 6], "cursor": [3, 3], "grid": "01 BBCCMxEEELMNAAKLoNooKFFoJGGoooJHHIIo 5"}
 
-    level = 0
+    level = 57
 
     agent = Agent()
 
@@ -20,7 +20,7 @@ def main():
             if level != 0 and level != int(line.split(" ")[0]):
                 continue
 
-            print("\nLevel: ", line.split(" ")[0])
+            print(f"\nLevel: {line.split(' ')[0]} -> {line.split(' ')[1]}")
 
             board= [*line.split(" ")[1]]
             print_board(board, 6)
@@ -29,8 +29,8 @@ def main():
             agent.cursor = [3, 3]
             agent.level = state["level"]
             agent.size = state["dimensions"][0]
-            agent.board = board
-            agent.cars = get_cars(board, agent.size)
+            agent.grid = get_grid(line.split(" ")[1], agent.size)
+            agent.cars = get_cars(agent.grid, agent.size)
 
             agent.root= Node(None, board, agent.cars, None, 0, 0)
 
