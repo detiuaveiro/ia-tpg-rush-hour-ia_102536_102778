@@ -12,7 +12,7 @@ class RandomCounter:
         self.size = None
         self.grid = None
         self.cars = None
-        self.cars_idx = None
+        self.cars_letters = None
         self.random_move = None
         # pointer to agent path
         self.path = path
@@ -27,7 +27,7 @@ class RandomCounter:
         self.size = size
         self.grid = get_grid(new_board, size)
         self.cars = get_cars(self.grid, size)
-        self.cars_idx = {car[0]: car for car in self.cars}
+        self.cars_letters = {car[0]: car for car in self.cars}
         self.moves = [*self.path]
         
         self.random_move = self.detect_random_move(get_grid(old_board, size))
@@ -47,7 +47,7 @@ class RandomCounter:
         idx = 0 
         while idx < len(self.moves):
             move = self.moves[idx]
-            car = self.cars_idx[move[0]]
+            car = self.cars_letters[move[0]]
 
             if self.random_move is not None and self.random_move[0] == move[0]:
                 # if the move is the same
