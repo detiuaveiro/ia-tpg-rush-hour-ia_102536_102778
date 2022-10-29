@@ -33,11 +33,7 @@ class RandomCounter:
         self.random_move = self.detect_random_move(get_grid(old_board, size))
         print(f"Random move detected: {self.random_move}")
 
-        print_grid(self.grid)
-        res = self.check_path()
-        print(self.moves)
-        return res
-        # return self.check_path()
+        return self.check_path()
 
 
     def check_path(self):

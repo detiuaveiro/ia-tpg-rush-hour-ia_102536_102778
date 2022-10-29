@@ -2,7 +2,7 @@
 
 class Node:
 
-    def __init__(self, parent, board, cars, action):
+    def __init__(self, parent, board, cars, action, cost):
         """
         Node constructor
         """
@@ -10,8 +10,8 @@ class Node:
         self.board = board
         self.cars = cars
         self.action = action
-        # self.cost = cost
-        # self.heuristic = heuristic
+        self.cost = cost
+        self.heuristic = 0
 
 
     def new_node(self, car, idx, direction, size):
@@ -56,7 +56,7 @@ class Node:
         # change car
         new_cars[idx] = (letter, x, y, orientation, length)
         # create new node
-        return Node(self, new_board, new_cars, (letter, direction))
+        return Node(self, new_board, new_cars, (letter, direction), self.cost + 1)
 
 
     def expand(self, size):

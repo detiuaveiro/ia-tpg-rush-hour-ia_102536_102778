@@ -47,7 +47,7 @@ class Agent:
         # random move happened
         if new_grid_str != grid_str:
             print("\n\nRandom move happened\n\n")
-            self.random_move(state, grid_str, new_grid_str)
+            self.random_move(state, new_grid_str)
             return
 
         # check if we moved a car
@@ -67,12 +67,12 @@ class Agent:
         self.random_moves = []
         self.key_gen.update(state, new_grid_str)
 
-        self.root = Node(None, [*new_grid_str], self.key_gen.cars, None)
+        self.root = Node(None, [*new_grid_str], self.key_gen.cars, None, 0)
 
         asyncio.create_task(self.solve())
 
 
-    def random_move(self, state, grid_str, new_grid_str):
+    def random_move(self, state, new_grid_str):
         """
         Random move happened
         """
@@ -80,11 +80,12 @@ class Agent:
         self.random_moves.append(new_grid_str) 
         print(len(self.random_moves))
 
-        if len(self.random_moves) > 5:
+        if len(self.random_moves) == 100:
             exit()
 
         # check if we are still calculating the path
         if self.path == []:
+            print("Still calculating the path")
             return
 
         while self.random_moves != []:
@@ -113,18 +114,18 @@ class Agent:
         """
         Solve the game
         """
-        win_pos = 4
+        win_pos = self.size - 2
         open_nodes = [self.root]
-        # heapq.heapify(open_nodes)
-        open_nodes = deque(open_nodes)
+        heapq.heapify(open_nodes)
+        # open_nodes = deque(open_nodes)
         nodes = {str(self.root)}
 
         while True:
 
             # await asyncio.sleep(0)
 
-            # node = heapq.heappop(open_nodes)
-            node = open_nodes.popleft()
+            node = heapq.heappop(open_nodes)
+            # node = open_nodes.popleft()
 
             if test_win(node.cars[0], win_pos):
                 print("Solved")
@@ -136,8 +137,8 @@ class Agent:
                 new_grid_str= str(new_node)
                 if new_grid_str not in nodes:
                     nodes.add(new_grid_str)
-                    # heapq.heappush(open_nodes, new_node)
-                    open_nodes.append(new_node)
+                    heapq.heappush(open_nodes, new_node)
+                    # open_nodes.append(new_node)
 
 
     def action(self):

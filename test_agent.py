@@ -31,16 +31,16 @@ async def main():
 
             agent.size = size
 
-            agent.root = Node(None, [*grid_str], cars, None)
+            agent.root = Node(None, [*grid_str], cars, None, 0)
 
             print_grid(grid)
 
             start = time.time()
-            path= await agent.solve()
+            await agent.solve()
             end = time.time()
 
             total_times += end-start
-
+            path = agent.path
             print("Time: ", end-start)
             print("Path: ", path)
             print("Moves: ", len(path))
