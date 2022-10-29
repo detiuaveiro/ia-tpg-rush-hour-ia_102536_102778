@@ -10,7 +10,7 @@ def main():
     rc = RandomCounter(path)
 
     grid = get_grid(grid_str, size)
-    cars = get_cars(grid, size)
+    cars = get_cars(grid)
 
     cars_idx = {cars[i][0]: i for i in range(len(cars))}
 
@@ -51,6 +51,7 @@ def main():
         car = cars[cars_idx[move[0]]]
         print(f"Simulating move: {move[0]} -> {move[1]}")
         move_car(grid, car, move[1])
+
 
     print("Final grid:")
     print_grid(grid)

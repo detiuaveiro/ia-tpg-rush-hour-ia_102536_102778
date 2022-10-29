@@ -5,16 +5,6 @@
 # idx = y * size + x
 
 
-def print_board(board, size):
-    """
-    Print board
-    """
-    for i in range(size):
-        for j in range(size):
-            print(board[i * size + j], end=' ')
-        print()
-
-
 def print_grid(grid):
     """
     Print grid
@@ -33,11 +23,11 @@ def get_grid(str_, size):
         return [[*str_[i:i+size]] for i in range(0, len(str_), size)]
 
 
-
-def get_cars(grid, size):
+def get_cars(grid):
     """
     Get cars from grid
     """
+    size = len(grid)
     # letter : [ x, y, orientation, length ]
     cars = {}
     # loop through grid
@@ -124,3 +114,33 @@ def move_car(grid, car, direction):
         grid[y][x] = 'o'
         # move car
         car[2] += 1
+
+
+def nearest_coords(cursor, car):
+    """
+    Get nearest coords to cursor
+    """
+    _, x, y, orientation, length = car
+
+    # horizontal
+    if orientation == 'h':
+        # left
+        if cursor[0] < x:
+            return (x, y)
+        # right
+        elif cursor[0] > x + length - 1:
+            return (x + length - 1, y)
+        # middle
+        else:
+            return (cursor[0], y)
+    # vertical
+    else:
+        # up
+        if cursor[1] < y:
+            return (x, y)
+        # down
+        elif cursor[1] > y + length - 1:
+            return (x, y + length - 1)
+        # middle
+        else:
+            return (x, cursor[1])

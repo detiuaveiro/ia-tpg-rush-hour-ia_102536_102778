@@ -215,3 +215,83 @@ class Agent:
                     car[2] += 1
                 case ' ':
                     self.selected = ''
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def update(self, state):
+#         """
+#         Update the agent
+#         """
+#         self.cursor = state["cursor"]
+#         new_grid_str = state["grid"].split(" ")[1]
+#         grid_str = str(self)
+
+#         # new level
+#         if self.level != state["level"]:
+#             print(f"New level: {state['level']}")
+
+#             self.level = state["level"]
+#             self.selected = state["selected"]
+#             self.size = state["dimensions"][0]
+
+
+
+#             self.grid = get_grid(grid_str, self.size)
+#             self.cars = get_cars(self.grid, self.size)
+
+#             # self.root = Node(None, board, self.cars, None, 0, 0)
+            
+#             self.path[:] = []
+#             asyncio.create_task(self.solve())
+
+#         # random move happened
+#         elif grid_str != new_grid_str:
+#             print("Random move happened")
+
+#             # still calculating the path
+#             if self.path == []:
+#                 # add the grid_str to the random moves
+#                 self.random_moves.append(new_grid_str) 
+#                 return
+
+#             # if we moved a car at the same time as the random move
+#             # we need to check if we completed the move
+#             if self.moved:
+#                 x, y, letter = self.moved_car
+#                 # car moved successfully
+#                 if new_grid_str[y * self.size + x] == 'o':
+#                     self.move_completed()
+
+#             # call the random counter to fix the path
+#             res = self.random_counter.update_path(grid_str, new_grid_str, self.size)
+
+#             # fix didnt work, just in case ...
+#             if not res:
+#                 print("If i see this print, i will be surprised")
+#                 # calculate a new path
+#                 self.path[:] = []
+#                 asyncio.create_task(self.solve())
+         
+#         # car moved successfully
+#         elif self.moved:
+#             self.move_completed()
+
+
+#     def move_completed(self):
+#         """
+#         Move completed
+#         """
+#         self.moved = False
+#         self.moved_car = None
+#         self.path.pop(0)
+#         # TODO change grid and cars

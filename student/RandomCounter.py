@@ -1,4 +1,4 @@
-from Functions import *
+from student.Functions import *
 
 # car = ( letter, x, y, orientation, length )
 # move = ( letter, direction )
@@ -26,7 +26,7 @@ class RandomCounter:
         """
         self.size = size
         self.grid = get_grid(new_board, size)
-        self.cars = get_cars(self.grid, size)
+        self.cars = get_cars(self.grid)
         self.cars_letters = {car[0]: car for car in self.cars}
         self.moves = [*self.path]
         

@@ -1,15 +1,17 @@
+import asyncio
 from Functions import *
 from Agent import Agent
 from Node import Node
 import time
+from functools import reduce
 
 # car = ( letter, x, y, orientation, length )
 
-def main():
+async def main():
 
     state = {"level": 1, "selected":'', "dimensions": [6, 6], "cursor": [3, 3], "grid": "01 BBCCMxEEELMNAAKLoNooKFFoJGGoooJHHIIo 5"}
 
-    level = 57
+    level = 0
 
     agent = Agent()
 
@@ -22,20 +24,19 @@ def main():
 
             print(f"\nLevel: {line.split(' ')[0]} -> {line.split(' ')[1]}")
 
-            board= [*line.split(" ")[1]]
-            print_board(board, 6)
+            grid_str = line.split(" ")[1]
+            size = state["dimensions"][0]
+            grid = get_grid(grid_str, size)
+            cars = get_cars(grid)
 
-            agent.selected= ''
-            agent.cursor = [3, 3]
-            agent.level = state["level"]
-            agent.size = state["dimensions"][0]
-            agent.grid = get_grid(line.split(" ")[1], agent.size)
-            agent.cars = get_cars(agent.grid, agent.size)
+            agent.size = size
 
-            agent.root= Node(None, board, agent.cars, None, 0, 0)
+            agent.root = Node(None, [*grid_str], cars, None)
+
+            print_grid(grid)
 
             start = time.time()
-            path= agent.solve()
+            path= await agent.solve()
             end = time.time()
 
             total_times += end-start
@@ -49,5 +50,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
 
