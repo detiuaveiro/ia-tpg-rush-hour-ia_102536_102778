@@ -1,5 +1,5 @@
-from Functions import *
-from RandomCounter import RandomCounter
+from student.Functions import *
+from student.RandomCounter import RandomCounter
 import random
 
 def main():

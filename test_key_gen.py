@@ -1,6 +1,5 @@
-from select import select
-from Functions import *
-from KeyGenerator import KeyGenerator
+from student.Functions import *
+from student.KeyGenerator import KeyGenerator
 
 def main():
 

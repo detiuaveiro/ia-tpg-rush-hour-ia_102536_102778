@@ -1,6 +1,7 @@
 import asyncio
 from collections import deque
 import heapq
+
 from student.Functions import *
 from student.Node import Node
 from student.RandomCounter import RandomCounter
@@ -64,7 +65,7 @@ class Agent:
         self.size = state["dimensions"][0]
         self.path[:] = []
         self.random_moves = []
-        self.key_gen.update(state)
+        self.key_gen.update(state, new_grid_str)
 
         self.root = Node(None, [*new_grid_str], self.key_gen.cars, None)
 
@@ -77,12 +78,16 @@ class Agent:
         """
         # add the grid_str to the random moves
         self.random_moves.append(new_grid_str) 
+        print(len(self.random_moves))
+
+        if len(self.random_moves) > 5:
+            exit()
 
         # check if we are still calculating the path
         if self.path == []:
             return
 
-        while self.random_moves:
+        while self.random_moves != []:
             new_grid_str = self.random_moves.pop(0)
             grid_str = str(self.key_gen)
 
@@ -91,16 +96,17 @@ class Agent:
             self.key_gen.check_moved()
 
             # update the key generator
-            self.key_gen.update(state)
+            self.key_gen.update(state, new_grid_str)
 
             # call the random counter to fix the path
             res = self.random_counter.update_path(grid_str, new_grid_str, self.size)
+            print(f"Fix worked: {res}")
 
             # fix didnt work, just in case ...
             if not res:
-                print("If i see this print, i will be surprised")
                 # re calculate the path
                 self.new_level(state, new_grid_str)
+                return
 
 
     async def solve(self):

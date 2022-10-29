@@ -5,7 +5,6 @@ import os
 import websockets
 from time import sleep
 
-# from random_.Agent0 import Agent
 from student.Agent import Agent
 
 sleep(1)

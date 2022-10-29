@@ -1,9 +1,9 @@
 import asyncio
-from Functions import *
-from Agent import Agent
-from Node import Node
 import time
-from functools import reduce
+
+from student.Functions import *
+from student.Agent import Agent
+from student.Node import Node
 
 # car = ( letter, x, y, orientation, length )
 

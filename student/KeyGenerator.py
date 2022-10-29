@@ -22,14 +22,14 @@ class KeyGenerator:
         self.moved = None
 
 
-    def update(self, state):
+    def update(self, state, new_grid_str):
         """
         Update the key generator
         """
         self.cursor = state["cursor"]
         self.selected = state["selected"]
         self.size = state["dimensions"][0]
-        self.grid = get_grid(state["grid"].split(" ")[1], self.size)
+        self.grid = get_grid(new_grid_str, self.size)
         self.cars = get_cars(self.grid)
 
 
@@ -111,7 +111,6 @@ class KeyGenerator:
             self.moving = True
             letter, x_, y_, _, length = car
             # get coords that changed to letter
-            print(x_,y_)
             if key_vectors[key][0] == -1:
                 x_ -= 1
             elif key_vectors[key][0] == 1:
