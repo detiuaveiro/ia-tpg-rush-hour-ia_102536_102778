@@ -1,11 +1,11 @@
-import asyncio
-from collections import deque
-import heapq
-
 from student.Functions import *
 from student.Node import Node
 from student.RandomCounter import RandomCounter
 from student.KeyGenerator import KeyGenerator
+
+import asyncio
+from collections import deque
+import heapq
 
 # car = ( letter, x, y, orientation, length )
 
@@ -67,7 +67,7 @@ class Agent:
         self.random_moves = []
         self.key_gen.update(state, new_grid_str)
 
-        self.root = Node(None, [*new_grid_str], self.key_gen.cars, None, 0)
+        self.root = Node(None, [*new_grid_str], self.key_gen.cars, None, -1, state["cursor"])
 
         asyncio.create_task(self.solve())
 
@@ -78,7 +78,6 @@ class Agent:
         """
         # add the grid_str to the random moves
         self.random_moves.append(new_grid_str) 
-        print(len(self.random_moves))
 
         if len(self.random_moves) == 100:
             exit()
@@ -107,6 +106,7 @@ class Agent:
             if not res:
                 # re calculate the path
                 self.new_level(state, new_grid_str)
+                # exit()
                 return
 
 
@@ -130,7 +130,9 @@ class Agent:
             if test_win(node.cars[0], win_pos):
                 print("Solved")
                 print(f"Total nodes: {len(nodes)}")
+                print(f"Node cost: {node.cost}")
                 self.path[:]= get_path(node)
+                print(self.path)
                 return
 
             for new_node in node.expand(self.size):

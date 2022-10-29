@@ -1,8 +1,11 @@
+from student.Functions import *
+# from student.Heuristics import *
+
 # car = ( letter, x, y, orientation, length )
 
 class Node:
 
-    def __init__(self, parent, board, cars, action, cost):
+    def __init__(self, parent, board, cars, action, cost, cursor):
         """
         Node constructor
         """
@@ -11,7 +14,11 @@ class Node:
         self.cars = cars
         self.action = action
         self.cost = cost
-        self.heuristic = 0
+        self.cursor = cursor
+
+        self.heuristic = self.get_heuristic()
+
+        self.vectors =  { 'a': (-1, 0), 'd': (1, 0), 'w': (0, -1), 's': (0, 1) }
 
 
     def new_node(self, car, idx, direction, size):
@@ -54,9 +61,12 @@ class Node:
         # copy the cars
         new_cars = [*self.cars]
         # change car
-        new_cars[idx] = (letter, x, y, orientation, length)
+        new_car = (letter, x, y, orientation, length)
+        new_cars[idx] = new_car
+        new_cost, cursor = self.get_cost(car, direction)
+        # new_cost = self.cost + self.get_cost2(new_car)
         # create new node
-        return Node(self, new_board, new_cars, (letter, direction), self.cost + 1)
+        return Node(self, new_board, new_cars, (letter, direction), new_cost, cursor)
 
 
     def expand(self, size):
@@ -86,6 +96,32 @@ class Node:
                 if y + length < size and self.board[(y + length) * size + x] == 'o':
                     # create new Node
                     yield self.new_node(car, idx, 's', size)
+
+
+    def get_cost(self, new_car, direction):
+        """
+        Cost function
+        """
+        coords = nearest_coords(self.cursor, new_car)
+        cost = self.cost
+
+        # calculate cost
+        if self.cursor[0] == coords[0] and self.cursor[1] == coords[1]:
+            cost += 1
+        else:
+            cost += 3 + abs(self.cursor[0] - coords[0]) + abs(self.cursor[1] - coords[1])
+
+        # new cursor
+        coords[0] += self.vectors[direction][0]
+        coords[1] += self.vectors[direction][1]
+
+        return cost, coords
+
+    def get_heuristic(self):
+        """
+        Heuristic function
+        """
+        return 0
 
 
     def __lt__(self, other):

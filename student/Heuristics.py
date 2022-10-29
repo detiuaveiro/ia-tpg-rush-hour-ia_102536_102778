@@ -1,4 +1,4 @@
-from Functions import print_board
+# from Functions import print_board
 
 """
 Heuristicas admissiveis:
@@ -102,5 +102,17 @@ def blocking_cars_4(board, size, cars):
     return block_cars1 + block_cars2
 
 
-def heuristic(board, size, cars):
+def heuristic_(board, size, cars):
     return blocking_cars_4(board, size, cars) + blocking_cars(board, size, cars)
+
+
+
+    # return heuristic_(self.board, 6, self.cars)
+    #     _, x, y, _, length = self.cars[0]
+
+    #     blocking_cars = 0
+    #     for pos in range(x+length + y*6, 5 + y*6):
+    #         if self.board[pos] != 'o':
+    #             blocking_cars += 1
+
+    #     return blocking_cars

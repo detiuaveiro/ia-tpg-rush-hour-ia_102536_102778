@@ -31,6 +31,7 @@ class KeyGenerator:
         self.size = state["dimensions"][0]
         self.grid = get_grid(new_grid_str, self.size)
         self.cars = get_cars(self.grid)
+        self.moving = False
 
 
     def move_completed(self):

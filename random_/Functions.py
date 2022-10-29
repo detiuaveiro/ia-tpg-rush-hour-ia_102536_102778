@@ -171,4 +171,15 @@ def cost2(cursor, selected, car):
 
     return abs(cursor[0] - car[1]) + abs(cursor[1] - car[2]) + 3
 
+# if self.action is None:
+        #     return 2
+
+        # letter = self.action[0]
+        # car, = [car for car in self.cars if car[0] == letter]
+
+        # if letter == new_car[0]:
+        #     return 1
+
+        # return abs(car[1] - new_car[1]) + abs(car[2] - new_car[2]) + 3
+
     

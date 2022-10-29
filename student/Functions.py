@@ -126,21 +126,21 @@ def nearest_coords(cursor, car):
     if orientation == 'h':
         # left
         if cursor[0] < x:
-            return (x, y)
+            return [x, y]
         # right
         elif cursor[0] > x + length - 1:
-            return (x + length - 1, y)
+            return [x + length - 1, y]
         # middle
         else:
-            return (cursor[0], y)
+            return [cursor[0], y]
     # vertical
     else:
         # up
         if cursor[1] < y:
-            return (x, y)
+            return [x, y]
         # down
         elif cursor[1] > y + length - 1:
-            return (x, y + length - 1)
+            return [x, y + length - 1]
         # middle
         else:
-            return (x, cursor[1])
+            return [x, cursor[1]]
