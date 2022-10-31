@@ -1,5 +1,8 @@
+# Authors:
+# 102536 Leonardo Almeida
+# 102778 Pedro Rodrigues
+
 from student.Functions import *
-# from student.Heuristics import *
 
 # car = ( letter, x, y, orientation, length )
 
@@ -15,8 +18,6 @@ class Node:
         self.action = action
         self.cost = cost
         self.cursor = cursor
-
-        self.heuristic = self.get_heuristic()
 
         self.vectors =  { 'a': (-1, 0), 'd': (1, 0), 'w': (0, -1), 's': (0, 1) }
 
@@ -81,7 +82,7 @@ class Node:
                 # move left
                 if x > 0 and self.board[y * size + x - 1] == 'o':
                     # create new Node
-                    yield self.new_node(car, idx,'a', size)
+                    yield self.new_node(car, idx, 'a', size)
                 # move right
                 if x + length < size and self.board[y * size + x + length] == 'o':
                     # create new Node
@@ -117,18 +118,12 @@ class Node:
 
         return cost, coords
 
-    def get_heuristic(self):
-        """
-        Heuristic function
-        """
-        return 0
-
 
     def __lt__(self, other):
         """
         Compare nodes
         """
-        return self.cost + self.heuristic < other.cost + other.heuristic
+        return self.cost < other.cost
 
 
     def __str__(self):

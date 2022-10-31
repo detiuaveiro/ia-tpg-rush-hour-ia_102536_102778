@@ -1,13 +1,14 @@
+# Authors:
+# 102536 Leonardo Almeida
+# 102778 Pedro Rodrigues
+
 import asyncio
 import getpass
 import json
 import os
 import websockets
-from time import sleep
 
 from student.Agent import Agent
-
-sleep(1)
 
 async def agent_loop(server_address="localhost:8000", agent_name="student"):
     """Example client loop."""
@@ -29,7 +30,7 @@ async def agent_loop(server_address="localhost:8000", agent_name="student"):
 
                 # get action from agent
                 key = agent.action()
-                print(f"Action: {moves[key]}")
+                # print(f"Action: {moves[key]}")
 
                 # send key command to server - you must implement this send in the AI agent
                 await websocket.send(json.dumps({"cmd": "key", "key": key}))

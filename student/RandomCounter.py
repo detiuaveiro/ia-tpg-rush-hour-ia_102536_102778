@@ -1,3 +1,7 @@
+# Authors:
+# 102536 Leonardo Almeida
+# 102778 Pedro Rodrigues
+
 from student.Functions import *
 
 # car = ( letter, x, y, orientation, length )
@@ -74,6 +78,7 @@ class RandomCounter:
                 continue
 
             # else, the car got stuck bc of the random move
+
             if self.random_move is None:
                 return False
             # insert the counter move here bc its close to the stuck car
@@ -85,7 +90,7 @@ class RandomCounter:
         # check if it worked
         if test_win(self.cars[0], self.size - 2):
             if self.random_move is not None:
-                print(f"Random move doesnt change anything")
+                print(f"Fix: do nothing")
 
             # update the agent path
             self.path[:] = self.moves

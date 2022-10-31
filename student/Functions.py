@@ -1,9 +1,11 @@
+# Authors:
+# 102536 Leonardo Almeida
+# 102778 Pedro Rodrigues
 
 # car = ( letter, x, y, orientation, length )
 # y = idx // size
 # x = idx % size
 # idx = y * size + x
-
 
 def print_grid(grid):
     """

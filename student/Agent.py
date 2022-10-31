@@ -1,11 +1,14 @@
+# Authors:
+# 102536 Leonardo Almeida
+# 102778 Pedro Rodrigues
+
 from student.Functions import *
 from student.Node import Node
 from student.RandomCounter import RandomCounter
 from student.KeyGenerator import KeyGenerator
 
 import asyncio
-from collections import deque
-import heapq
+from heapq import heapify, heappush, heappop
 
 # car = ( letter, x, y, orientation, length )
 
@@ -38,22 +41,19 @@ class Agent:
 
         # new level
         if self.level is None or self.level != state["level"]:
-            print(f"\n\nNew level: {state['level']}\n\n")
+            print(f"\nNew level: {state['level']}\n")
             self.new_level(state, new_grid_str)
             return
 
+        if self.key_gen.check_moved(new_grid_str, state):
+            self.key_gen.simulate()
+
         grid_str = str(self.key_gen)
 
-        # random move happened
+        # random move happened or grids are not equal
         if new_grid_str != grid_str:
-            print("\n\nRandom move happened\n\n")
+            print("\nRandom move happened\n")
             self.random_move(state, new_grid_str)
-            return
-
-        # check if we moved a car
-        if self.key_gen.moving:
-            # update path
-            self.key_gen.move_completed()
             return
 
 
@@ -79,9 +79,6 @@ class Agent:
         # add the grid_str to the random moves
         self.random_moves.append(new_grid_str) 
 
-        if len(self.random_moves) == 100:
-            exit()
-
         # check if we are still calculating the path
         if self.path == []:
             print("Still calculating the path")
@@ -91,9 +88,8 @@ class Agent:
             new_grid_str = self.random_moves.pop(0)
             grid_str = str(self.key_gen)
 
-            # if we moved a car at the same time as the random move
-            # we need to check if we completed the move
-            self.key_gen.check_moved()
+            if new_grid_str == grid_str:
+                continue
 
             # update the key generator
             self.key_gen.update(state, new_grid_str)
@@ -104,9 +100,9 @@ class Agent:
 
             # fix didnt work, just in case ...
             if not res:
+                print("this should not happen, but here we are")
                 # re calculate the path
                 self.new_level(state, new_grid_str)
-                # exit()
                 return
 
 
@@ -116,31 +112,25 @@ class Agent:
         """
         win_pos = self.size - 2
         open_nodes = [self.root]
-        heapq.heapify(open_nodes)
-        # open_nodes = deque(open_nodes)
+        heapify(open_nodes)
         nodes = {str(self.root)}
 
         while True:
 
             # await asyncio.sleep(0)
 
-            node = heapq.heappop(open_nodes)
-            # node = open_nodes.popleft()
+            node = heappop(open_nodes)
 
             if test_win(node.cars[0], win_pos):
                 print("Solved")
-                print(f"Total nodes: {len(nodes)}")
-                print(f"Node cost: {node.cost}")
                 self.path[:]= get_path(node)
-                print(self.path)
                 return
 
             for new_node in node.expand(self.size):
                 new_grid_str= str(new_node)
                 if new_grid_str not in nodes:
                     nodes.add(new_grid_str)
-                    heapq.heappush(open_nodes, new_node)
-                    # open_nodes.append(new_node)
+                    heappush(open_nodes, new_node)
 
 
     def action(self):
@@ -151,14 +141,7 @@ class Agent:
         if self.path == []:
             return ''
 
-        key = self.key_gen.next_key()
-        self.key_gen.simulate(key)
-        return key
-
+        # send the next key
+        return self.key_gen.next_key()
     
-    def __str__(self):
-        """
-        Agent string representation
-        """
-        return ''.join(''.join(row) for row in self.grid)
     
