@@ -52,7 +52,7 @@ class Agent:
 
         # random move happened or grids are not equal
         if new_grid_str != grid_str:
-            print("\nRandom move happened\n")
+            # print("\nRandom move happened\n")
             self.random_move(state, new_grid_str)
             return
 
@@ -67,7 +67,7 @@ class Agent:
         self.random_moves = []
         self.key_gen.update(state, new_grid_str)
 
-        self.root = Node(None, [*new_grid_str], self.key_gen.cars, None, -1, state["cursor"])
+        self.root = Node(None, [*new_grid_str], self.key_gen.cars, None, 0, state["cursor"])
 
         asyncio.create_task(self.solve())
 
@@ -81,7 +81,7 @@ class Agent:
 
         # check if we are still calculating the path
         if self.path == []:
-            print("Still calculating the path")
+            # print("Still calculating the path")
             return
 
         while self.random_moves != []:
@@ -96,11 +96,11 @@ class Agent:
 
             # call the random counter to fix the path
             res = self.random_counter.update_path(grid_str, new_grid_str, self.size)
-            print(f"Fix worked: {res}")
+            # print(f"Fix worked: {res}")
 
-            # fix didnt work, just in case ...
+            # fix didnt work, just in case ... (or on purpose, depends on the random counter)
             if not res:
-                print("this should not happen, but here we are")
+                print("Fix: recalculate the path")
                 # re calculate the path
                 self.new_level(state, new_grid_str)
                 return
@@ -113,7 +113,7 @@ class Agent:
         win_pos = self.size - 2
         open_nodes = [self.root]
         heapify(open_nodes)
-        nodes = {str(self.root)}
+        nodes = {str(self.root): 0}
 
         while True:
 
@@ -122,14 +122,16 @@ class Agent:
             node = heappop(open_nodes)
 
             if test_win(node.cars[0], win_pos):
-                print("Solved")
+                # print("Solution found")
+                # print(f"Cost: {node.cost}")
+                # print(f"Open nodes: {len(open_nodes)}")
                 self.path[:]= get_path(node)
                 return
 
             for new_node in node.expand(self.size):
                 new_grid_str= str(new_node)
-                if new_grid_str not in nodes:
-                    nodes.add(new_grid_str)
+                if new_grid_str not in nodes or nodes[new_grid_str] > new_node.cost:
+                    nodes[new_grid_str] = new_node.cost
                     heappush(open_nodes, new_node)
 
 

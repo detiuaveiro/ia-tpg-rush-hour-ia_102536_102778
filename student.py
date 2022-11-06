@@ -28,6 +28,10 @@ async def agent_loop(server_address="localhost:8000", agent_name="student"):
                 # update agent state
                 agent.update(state)
 
+                if agent.path == []:
+                    # print("New")
+                    await asyncio.sleep(1 / state["game_speed"]*0.9)
+
                 # get action from agent
                 key = agent.action()
                 # print(f"Action: {moves[key]}")

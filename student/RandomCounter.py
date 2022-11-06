@@ -35,7 +35,7 @@ class RandomCounter:
         self.moves = [*self.path]
         
         self.random_move = self.detect_random_move(get_grid(old_board, size))
-        print(f"Random move detected: {self.random_move}")
+        # print(f"Random move detected: {self.random_move}")
 
         return self.check_path()
 
@@ -78,13 +78,13 @@ class RandomCounter:
                 continue
 
             # else, the car got stuck bc of the random move
-
+            return False
             if self.random_move is None:
                 return False
             # insert the counter move here bc its close to the stuck car
             new_move = (self.random_move[0], reverse[self.random_move[1]])
             self.moves.insert(idx, new_move)
-            print(f"Fix: add new move {new_move}")
+            # print(f"Fix: add new move {new_move}")
             self.random_move = None 
 
         # check if it worked

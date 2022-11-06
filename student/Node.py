@@ -17,6 +17,7 @@ class Node:
         self.cars = cars
         self.action = action
         self.cost = cost
+        self.heuristic = self.get_heuristic()
         self.cursor = cursor
 
         self.vectors =  { 'a': (-1, 0), 'd': (1, 0), 'w': (0, -1), 's': (0, 1) }
@@ -109,8 +110,12 @@ class Node:
         # calculate cost
         if self.cursor[0] == coords[0] and self.cursor[1] == coords[1]:
             cost += 1
+            if self.parent is None:
+                cost += 1
         else:
             cost += 3 + abs(self.cursor[0] - coords[0]) + abs(self.cursor[1] - coords[1])
+            if self.parent is None:
+                cost -= 1
 
         # new cursor
         coords[0] += self.vectors[direction][0]
@@ -119,15 +124,30 @@ class Node:
         return cost, coords
 
 
+    def get_heuristic(self):
+        """
+        Heuristic function
+        """
+        # return 0
+        if self.parent is None or self.parent.action is None:
+            return 0
+
+        # if self.parent.action[0] == self.action[0]:
+        #     return 0
+        
+        return 0
+
+
     def __lt__(self, other):
         """
         Compare nodes
         """
-        return self.cost < other.cost
+        return self.cost + self.heuristic < other.cost + other.heuristic
 
 
     def __str__(self):
         """
         String representation of node
         """
-        return ''.join(self.board)
+        # return ''.join(self.board)
+        return f"{''.join(self.board)}{self.cursor[0]}{self.cursor[1]}"
