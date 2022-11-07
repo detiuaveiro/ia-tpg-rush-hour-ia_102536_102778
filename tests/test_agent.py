@@ -92,8 +92,8 @@ async def main(level=0, store= False):
 
             print("Real cost: ", cost)
             total_cost += cost
-
-    k_file.close()
+    if store:
+        k_file.close()
 
     print("Total Time: ", total_times)
     print("Total Cost: ", total_cost)

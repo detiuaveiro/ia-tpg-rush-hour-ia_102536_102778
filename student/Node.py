@@ -149,5 +149,5 @@ class Node:
         """
         String representation of node
         """
-        # return ''.join(self.board)
-        return f"{''.join(self.board)}{self.cursor[0]}{self.cursor[1]}"
+        return ''.join(self.board)
+        # return f"{''.join(self.board)}{self.cursor[0]}{self.cursor[1]}"
