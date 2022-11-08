@@ -17,8 +17,8 @@ async def main(level=0, store= False):
 
     agent = Agent()
 
-    if store:
-        k_file = open('tests/key_file.txt', 'w')
+    # if store:
+    #     k_file = open('tests/key_file.txt', 'w')
 
     total_times=0
     total_cost = 0
@@ -73,8 +73,8 @@ async def main(level=0, store= False):
                 key = k_gen.next_key()
                 cost += 1
 
-                if store:
-                    k_file.write(key + '\n')
+                # if store:
+                #     k_file.write(key + '\n')
                 
 
                 if k_gen.last_key is None:
@@ -92,12 +92,14 @@ async def main(level=0, store= False):
 
             print("Real cost: ", cost)
             total_cost += cost
-    if store:
-        k_file.close()
+    
+    # if store:
+    #     k_file.close()
 
     print("Total Time: ", total_times)
     print("Total Cost: ", total_cost)
-    print("Total points: ", total_points - total_cost)
+    print("Total points: ", total_points)
+    print("Max points: ", total_points-total_cost)
     print("Total time to run:" , total_cost/10 /60, "minutes")
 
 

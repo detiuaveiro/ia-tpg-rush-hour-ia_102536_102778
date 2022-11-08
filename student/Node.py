@@ -17,8 +17,12 @@ class Node:
         self.cars = cars
         self.action = action
         self.cost = cost
-        self.heuristic = self.get_heuristic()
+        # self.heuristic = self.get_heuristic()
         self.cursor = cursor
+
+        # not a __str__ bc we only calculate it once
+        # self.id = f"{cursor[0]}{cursor[1]}{''.join(board)}"
+        self.id = ''.join(board)
 
         self.vectors =  { 'a': (-1, 0), 'd': (1, 0), 'w': (0, -1), 's': (0, 1) }
 
@@ -131,9 +135,6 @@ class Node:
         # return 0
         if self.parent is None or self.parent.action is None:
             return 0
-
-        # if self.parent.action[0] == self.action[0]:
-        #     return 0
         
         return 0
 
@@ -142,12 +143,13 @@ class Node:
         """
         Compare nodes
         """
-        return self.cost + self.heuristic < other.cost + other.heuristic
+        return self.cost < other.cost
+        
+        # return self.cost + self.heuristic < other.cost + other.heuristic
 
-
-    def __str__(self):
-        """
-        String representation of node
-        """
-        return ''.join(self.board)
-        # return f"{''.join(self.board)}{self.cursor[0]}{self.cursor[1]}"
+    # def __str__(self):
+    #     """
+    #     String representation of node
+    #     """
+    #     return ''.join(self.board)
+    #     return f"{self.cursor[0]}{self.cursor[1]}{''.join(self.board)}"

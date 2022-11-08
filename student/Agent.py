@@ -41,7 +41,7 @@ class Agent:
 
         # new level
         if self.level is None or self.level != state["level"]:
-            print(f"\nNew level: {state['level']}\n")
+            # print(f"\nNew level: {state['level']}\n")
             self.new_level(state, new_grid_str)
             return
 
@@ -100,7 +100,7 @@ class Agent:
 
             # fix didnt work, just in case ... (or on purpose, depends on the random counter)
             if not res:
-                print("Fix: recalculate the path")
+                # print("Fix: recalculate the path")
                 # re calculate the path
                 self.new_level(state, new_grid_str)
                 return
@@ -113,13 +113,17 @@ class Agent:
         win_pos = self.size - 2
         open_nodes = [self.root]
         heapify(open_nodes)
-        nodes = {str(self.root): 0}
+
+        nodes = { self.root.id : self.root.cost}
 
         while True:
 
             # await asyncio.sleep(0)
 
             node = heappop(open_nodes)
+
+            # if nodes[node.id] != node.cost:
+            #     continue
 
             if test_win(node.cars[0], win_pos):
                 # print("Solution found")
@@ -129,9 +133,8 @@ class Agent:
                 return
 
             for new_node in node.expand(self.size):
-                new_grid_str= str(new_node)
-                if new_grid_str not in nodes or nodes[new_grid_str] > new_node.cost:
-                    nodes[new_grid_str] = new_node.cost
+                if new_node.id not in nodes or nodes[new_node.id] > new_node.cost:
+                    nodes[new_node.id] = new_node.cost
                     heappush(open_nodes, new_node)
 
 

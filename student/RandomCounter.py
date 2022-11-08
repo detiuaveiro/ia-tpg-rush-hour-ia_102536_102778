@@ -59,7 +59,7 @@ class RandomCounter:
                     # remove the move
                     self.moves.pop(idx)
                     # the random move was beneficial
-                    print(f"Fix: remove {move}")
+                    # print(f"Fix: remove {move}")
                     self.random_move = None
                     continue
                 # if the move is not the same
@@ -67,7 +67,7 @@ class RandomCounter:
                     # add the move to counter the random move
                     self.moves.insert(idx, move)
                     # we add the counter move here bc we are moving the car that moved randomly
-                    print(f"Fix: add {move} again")
+                    # print(f"Fix: add {move} again")
                     self.random_move = None
 
             # if the move is possible
@@ -78,7 +78,10 @@ class RandomCounter:
                 continue
 
             # else, the car got stuck bc of the random move
+
+            # at game speed 10 and random 10 is better to recalculate the path
             return False
+
             if self.random_move is None:
                 return False
             # insert the counter move here bc its close to the stuck car
@@ -89,8 +92,8 @@ class RandomCounter:
 
         # check if it worked
         if test_win(self.cars[0], self.size - 2):
-            if self.random_move is not None:
-                print(f"Fix: do nothing")
+            # if self.random_move is not None:
+            #     print(f"Fix: do nothing")
 
             # update the agent path
             self.path[:] = self.moves

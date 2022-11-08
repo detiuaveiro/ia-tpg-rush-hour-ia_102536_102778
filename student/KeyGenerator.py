@@ -58,7 +58,6 @@ class KeyGenerator:
             return False
 
         # print(f"Move {self.path[0]} done")
-        # print(f"Next move: {self.path[1]}")
         self.path.pop(0)
         self.moved = None
         return True
