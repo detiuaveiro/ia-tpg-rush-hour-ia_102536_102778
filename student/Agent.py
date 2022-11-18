@@ -7,8 +7,7 @@ from student.Node import Node
 from student.RandomCounter import RandomCounter
 from student.KeyGenerator import KeyGenerator
 
-import asyncio
-from heapq import heapify, heappush, heappop
+from heapq import heappush, heappop
 
 # car = ( letter, x, y, orientation, length )
 
@@ -18,135 +17,97 @@ class Agent:
         """
         Agent constructor
         """
-        # state
         self.level = None
-        self.size = None
-        # starting node
         self.root = None
-        # path
         self.path = []
-        # crazy driver counter
+        self.state_buffer = []
         self.random_counter = RandomCounter(self.path)
-        # key generator
         self.key_gen = KeyGenerator(self.path)
-        # random moves (grid_str) while calculating the path 
-        self.random_moves = []
 
 
     def update(self, state):
         """
         Update the agent
         """
-        new_grid_str = state["grid"].split(" ")[1]
-
-        # new level
         if self.level is None or self.level != state["level"]:
-            # print(f"\nNew level: {state['level']}\n")
-            self.new_level(state, new_grid_str)
+            self.level = state["level"]
+            Node.expanded = {}
+            Node.size = state["dimensions"][0]
+            self.solve_setup(state)
             return
 
-        if self.key_gen.check_moved(new_grid_str, state):
+        if self.key_gen.check_moved(state):
             self.key_gen.simulate()
 
-        grid_str = str(self.key_gen)
-
-        # random move happened or grids are not equal
-        if new_grid_str != grid_str:
-            # print("\nRandom move happened\n")
-            self.random_move(state, new_grid_str)
+        new_board = state["grid"].split(" ")[1]
+        board = str(self.key_gen)
+        if new_board != board:
+            self.random_move(state)
             return
 
 
-    def new_level(self, state, new_grid_str):
+    def solve_setup(self, state):
         """
-        New level
+        Setup the solve
         """
-        self.level = state["level"]
-        self.size = state["dimensions"][0]
         self.path[:] = []
-        self.random_moves = []
-        self.key_gen.update(state, new_grid_str)
+        self.state_buffer = []
+        self.key_gen.update(state)
+        new_board = state["grid"].split(" ")[1]
+        self.root = Node(None, new_board, self.key_gen.cars, ['x'], 0, state["cursor"])
+        Node.nodes = {new_board: 0}
+        self.solve()
 
-        self.root = Node(None, [*new_grid_str], self.key_gen.cars, None, 0, state["cursor"])
 
-        asyncio.create_task(self.solve())
-
-
-    def random_move(self, state, new_grid_str):
+    def random_move(self, state):
         """
-        Random move happened
+        Random move
         """
-        # add the grid_str to the random moves
-        self.random_moves.append(new_grid_str) 
+        self.state_buffer.append(state["grid"].split(" ")[1])
 
-        # check if we are still calculating the path
         if self.path == []:
-            # print("Still calculating the path")
             return
 
-        while self.random_moves != []:
-            new_grid_str = self.random_moves.pop(0)
+        while self.state_buffer != []:  
+            new_grid_str = self.state_buffer.pop(0)
             grid_str = str(self.key_gen)
 
             if new_grid_str == grid_str:
                 continue
 
-            # update the key generator
-            self.key_gen.update(state, new_grid_str)
+            self.key_gen.update(state)
 
-            # call the random counter to fix the path
-            res = self.random_counter.update_path(grid_str, new_grid_str, self.size)
-            # print(f"Fix worked: {res}")
+            res = self.random_counter.update_path(grid_str, new_grid_str, Node.size)
 
-            # fix didnt work, just in case ... (or on purpose, depends on the random counter)
             if not res:
-                # print("Fix: recalculate the path")
-                # re calculate the path
-                self.new_level(state, new_grid_str)
+                self.solve_setup(state)
                 return
 
 
-    async def solve(self):
+    def solve(self):
         """
-        Solve the game
+        Solve
         """
-        win_pos = self.size - 2
+        win_pos = Node.size - 2
         open_nodes = [self.root]
-        heapify(open_nodes)
-
-        nodes = { self.root.id : self.root.cost}
 
         while True:
-
-            # await asyncio.sleep(0)
-
             node = heappop(open_nodes)
 
-            # if nodes[node.id] != node.cost:
+            # if Node.nodes[node.board] != node.cost:
             #     continue
 
             if test_win(node.cars[0], win_pos):
-                # print("Solution found")
-                # print(f"Cost: {node.cost}")
-                # print(f"Open nodes: {len(open_nodes)}")
-                self.path[:]= get_path(node)
+                self.path[:] = get_path(node)
                 return
-
-            for new_node in node.expand(self.size):
-                if new_node.id not in nodes or nodes[new_node.id] > new_node.cost:
-                    nodes[new_node.id] = new_node.cost
-                    heappush(open_nodes, new_node)
-
+            for new_node in node.expand():
+                heappush(open_nodes, new_node)
+            
 
     def action(self):
         """
         Agent action
         """
-        # check if we have a path
-        if self.path == []:
+        if len(self.path) == 0:
             return ''
-
-        # send the next key
         return self.key_gen.next_key()
-    
-    

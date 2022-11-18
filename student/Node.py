@@ -8,6 +8,12 @@ from student.Functions import *
 
 class Node:
 
+    size = None
+    # board : [ (board, cars, action) ... ]
+    expanded = {}
+    # board : cost
+    nodes = {}
+
     def __init__(self, parent, board, cars, action, cost, cursor):
         """
         Node constructor
@@ -17,126 +23,118 @@ class Node:
         self.cars = cars
         self.action = action
         self.cost = cost
-        # self.heuristic = self.get_heuristic()
         self.cursor = cursor
 
-        # not a __str__ bc we only calculate it once
-        # self.id = f"{cursor[0]}{cursor[1]}{''.join(board)}"
-        self.id = ''.join(board)
 
-        self.vectors =  { 'a': (-1, 0), 'd': (1, 0), 'w': (0, -1), 's': (0, 1) }
+    def expand(self):
+        """
+        Expand node
+        """
+        if self.board in Node.expanded:
+            for node in Node.expanded[self.board]:
+                car = self.cars[node[2][2]]
+                new_cost, cursor = self.get_cost(car, node[2][1])
+                if node[0] not in Node.nodes or Node.nodes[node[0]] >= new_cost:
+                    Node.nodes[node[0]] = new_cost
+                    yield Node(self, node[0], node[1], node[2], new_cost, cursor)
+        else:
+            Node.expanded[self.board] = []
+            for idx, car in enumerate(self.cars):
+                _, x, y, orientation, length = car
+                if orientation == 'h':
+                    if x > 0 and self.board[y * Node.size + x - 1] == 'o':
+                        yield from self.new_node(car, idx, 'a')
+                    if x + length < Node.size and self.board[y * Node.size + x + length] == 'o':
+                        yield from self.new_node(car, idx, 'd')
+                else:
+                    if y > 0 and self.board[(y - 1) * Node.size + x] == 'o':
+                        yield from self.new_node(car, idx, 'w')
+                    if y + length < Node.size and self.board[(y + length) * Node.size + x] == 'o':
+                        yield from self.new_node(car, idx, 's')
 
 
-    def new_node(self, car, idx, direction, size):
+    def new_node(self, car, idx, direction):
         """
         Create new node
         """
         letter , x , y , orientation, length = car
-        # copy the board
         new_board = [*self.board]
 
-        # left 
-        if direction == 'a':  
-            # change board  
-            new_board[y * size + x - 1] = letter
-            new_board[y * size + x + length - 1] = 'o'
-            # change car
+        if direction == 'a':    
+            new_board[y * Node.size + x - 1] = letter
+            new_board[y * Node.size + x + length - 1] = 'o'
             x -= 1
-        # right
         elif direction == 'd':  
-            # change board
-            new_board[y * size + x + length] = letter
-            new_board[y * size + x] = 'o'
-            # change car
+            new_board[y * Node.size + x + length] = letter
+            new_board[y * Node.size + x] = 'o'
             x += 1
-        # up
-        elif direction == 'w': 
-            # change board 
-            new_board[(y - 1) * size + x] = letter
-            new_board[(y + length - 1) * size + x] = 'o'
-            # change car
+        elif direction == 'w':  
+            new_board[(y - 1) * Node.size + x] = letter
+            new_board[(y + length - 1) * Node.size + x] = 'o'
             y -= 1
-        # down
         else:  
-            # change board
-            new_board[(y + length) * size + x] = letter
-            new_board[y * size + x] = 'o'
-            # change car
+            new_board[(y + length) * Node.size + x] = letter
+            new_board[y * Node.size + x] = 'o'
             y += 1
 
-        # copy the cars
+        new_board_str = ''.join(new_board)
         new_cars = [*self.cars]
-        # change car
-        new_car = (letter, x, y, orientation, length)
-        new_cars[idx] = new_car
+        new_cars[idx] = (letter, x, y, orientation, length)
+        action = (letter, direction, idx)
         new_cost, cursor = self.get_cost(car, direction)
-        # new_cost = self.cost + self.get_cost2(new_car)
-        # create new node
-        return Node(self, new_board, new_cars, (letter, direction), new_cost, cursor)
+
+        Node.expanded[self.board].append((new_board_str, new_cars, action))
+
+        if new_board_str not in Node.nodes or Node.nodes[new_board_str] >= new_cost:
+            Node.nodes[new_board_str] = new_cost
+            # yield Node(self, new_board_str, new_cars, (letter, direction), new_cost, cursor)
+            yield Node(self, new_board_str, new_cars, action, new_cost, cursor)
 
 
-    def expand(self, size):
+    def get_cost(self, car, direction):
         """
-        Expand node
+        Get cost
         """
-        # loop through cars
-        for idx, car in enumerate(self.cars):
-            _, x, y, orientation, length = car
-            # horizontal
-            if orientation == 'h':
-                # move left
-                if x > 0 and self.board[y * size + x - 1] == 'o':
-                    # create new Node
-                    yield self.new_node(car, idx, 'a', size)
-                # move right
-                if x + length < size and self.board[y * size + x + length] == 'o':
-                    # create new Node
-                    yield self.new_node(car, idx, 'd', size)
-            # vertical
+        x, y = self.cursor
+        letter, car_x, car_y , orientation, length = car
+
+        if orientation == 'h':
+            if x < car_x:
+                new_x = car_x
+                new_y = car_y
+            elif x > car_x + length - 1:
+                new_x = car_x + length - 1
+                new_y = car_y
             else:
-                # move up
-                if y > 0 and self.board[(y - 1) * size + x] == 'o':
-                    # create new Node
-                    yield self.new_node(car, idx, 'w', size)
-                # move down
-                if y + length < size and self.board[(y + length) * size + x] == 'o':
-                    # create new Node
-                    yield self.new_node(car, idx, 's', size)
-
-
-    def get_cost(self, new_car, direction):
-        """
-        Cost function
-        """
-        coords = nearest_coords(self.cursor, new_car)
-        cost = self.cost
-
-        # calculate cost
-        if self.cursor[0] == coords[0] and self.cursor[1] == coords[1]:
-            cost += 1
-            if self.parent is None:
-                cost += 1
+                new_x = x
+                new_y = car_y
         else:
-            cost += 3 + abs(self.cursor[0] - coords[0]) + abs(self.cursor[1] - coords[1])
-            if self.parent is None:
-                cost -= 1
+            if y < car_y:
+                new_x = car_x
+                new_y = car_y
+            elif y > car_y + length - 1:
+                new_x = car_x
+                new_y = car_y + length - 1
+            else:
+                new_x = car_x
+                new_y = y
 
-        # new cursor
-        coords[0] += self.vectors[direction][0]
-        coords[1] += self.vectors[direction][1]
+        cost = self.cost
+        if self.action[0]== letter:
+            cost += 1
+        else:
+            cost += 3 + abs(new_x - x) + abs(new_y - y)
 
-        return cost, coords
+        if direction == 'a':
+            new_x -= 1
+        elif direction == 'd':
+            new_x += 1
+        elif direction == 'w':
+            new_y -= 1
+        else:
+            new_y += 1
 
-
-    def get_heuristic(self):
-        """
-        Heuristic function
-        """
-        # return 0
-        if self.parent is None or self.parent.action is None:
-            return 0
-        
-        return 0
+        return cost, (new_x, new_y)
 
 
     def __lt__(self, other):
@@ -144,12 +142,10 @@ class Node:
         Compare nodes
         """
         return self.cost < other.cost
-        
-        # return self.cost + self.heuristic < other.cost + other.heuristic
 
-    # def __str__(self):
-    #     """
-    #     String representation of node
-    #     """
-    #     return ''.join(self.board)
-    #     return f"{self.cursor[0]}{self.cursor[1]}{''.join(self.board)}"
+
+    def __str__(self):
+        """
+        Print node
+        """
+        return f'Board: {self.board}'

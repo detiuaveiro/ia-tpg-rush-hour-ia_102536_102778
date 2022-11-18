@@ -18,7 +18,6 @@ async def agent_loop(server_address="localhost:8000", agent_name="student"):
         await websocket.send(json.dumps({"cmd": "join", "name": agent_name}))
 
         agent = Agent()
-        moves={'a': 'left', 'd': 'right', 'w': 'up', 's': 'down', ' ': 'space', '':'none'}
 
         while True:
             try:
@@ -28,13 +27,8 @@ async def agent_loop(server_address="localhost:8000", agent_name="student"):
                 # update agent state
                 agent.update(state)
 
-                if agent.path == []:
-                    # print("New")
-                    await asyncio.sleep(1 / state["game_speed"]*0.9)
-
                 # get action from agent
                 key = agent.action()
-                # print(f"Action: {moves[key]}")
 
                 # send key command to server - you must implement this send in the AI agent
                 await websocket.send(json.dumps({"cmd": "key", "key": key}))

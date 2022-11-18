@@ -29,7 +29,7 @@ async def main(level=0, store= False):
             if level != 0 and level != int(line.split(" ")[0]):
                 continue
 
-            print(f"\nLevel: {line.split(' ')[0]} -> {line.split(' ')[1]}")
+            # print(f"\nLevel: {line.split(' ')[0]} -> {line.split(' ')[1]}")
 
             total_points += 2* int(line.split(' ')[2])
 
@@ -38,22 +38,29 @@ async def main(level=0, store= False):
             grid = get_grid(grid_str, size)
             cars = get_cars(grid)
 
-            agent.size = size
+            Node.expanded = {}
+            Node.size = size
 
-            agent.root = Node(None, [*grid_str], cars, None, 0, state["cursor"])
+            agent.path[:] = []
+            agent.state_buffer = []
+            agent.root = Node(None, grid_str, cars, ['x'], 0, state["cursor"])
+            Node.nodes = {grid_str: 0}
 
-            print_grid(grid)
+            # print_grid(grid)
 
             start = time.time()
-            await agent.solve()
+            agent.solve()
+            # print(len(Node.expanded))
+            # Node.nodes = {grid_str: 0}
+            # agent.solve()
             end = time.time()
 
             total_times += end-start
             path = agent.path
 
-            print("Time: ", end-start)
+            # print("Time: ", end-start)
             # print("Path: ", path)
-            print("Moves: ", len(path))
+            # print("Moves: ", len(path))
             
             k_gen = KeyGenerator(path)
 
@@ -90,8 +97,15 @@ async def main(level=0, store= False):
             state["cursor"] = k_gen.cursor
  
 
-            print("Real cost: ", cost)
+            # print("Real cost: ", cost)
             total_cost += cost
+
+            # Node.nodes = {grid_str: 0}
+            # start = time.time()
+            # agent.solve()
+            # end = time.time()
+            # total_times += end-start
+            # print("Time: ", end-start)
     
     # if store:
     #     k_file.close()
