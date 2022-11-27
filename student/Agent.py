@@ -39,6 +39,9 @@ class Agent:
         if self.key_gen.check_moved(state):
             self.key_gen.simulate()
 
+        self.key_gen.cursor = state["cursor"]
+        self.key_gen.selected = state["selected"]
+
         new_board = state["grid"].split(" ")[1]
         board = str(self.key_gen)
         if new_board != board:

@@ -49,8 +49,6 @@ class KeyGenerator:
         new_grid = get_grid(state["grid"].split(" ")[1], self.size)
 
         if new_grid[self.moved[2]][self.moved[1]] != self.moved[0]:
-            self.cursor = state["cursor"]
-            self.selected = state["selected"]
             self.moved = None
             return False
 

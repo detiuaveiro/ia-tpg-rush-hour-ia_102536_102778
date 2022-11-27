@@ -58,37 +58,32 @@ class Node:
         Create new node
         """
         letter , x , y , orientation, length = car
-        new_board = [*self.board]
+        board = self.board
 
-        if direction == 'a':    
-            new_board[y * Node.size + x - 1] = letter
-            new_board[y * Node.size + x + length - 1] = 'o'
+        pos = y * Node.size + x
+        if direction == 'a':
+            board = f"{board[:pos - 1]}{letter}{board[pos:pos + length - 1]}o{board[pos + length:]}"
             x -= 1
-        elif direction == 'd':  
-            new_board[y * Node.size + x + length] = letter
-            new_board[y * Node.size + x] = 'o'
+        elif direction == 'd':
+            board = f"{board[:pos]}o{board[pos + 1:pos + length]}{letter}{board[pos + length + 1:]}"
             x += 1
-        elif direction == 'w':  
-            new_board[(y - 1) * Node.size + x] = letter
-            new_board[(y + length - 1) * Node.size + x] = 'o'
+        elif direction == 'w':
+            board = f"{board[:pos - Node.size]}{letter}{board[pos - 5:pos + length*Node.size - Node.size]}o{board[pos + length*Node.size - 5:]}"
             y -= 1
-        else:  
-            new_board[(y + length) * Node.size + x] = letter
-            new_board[y * Node.size + x] = 'o'
+        else:
+            board = f"{board[:pos]}o{board[pos + 1:pos + length*Node.size]}{letter}{board[pos + length*Node.size + 1:]}"
             y += 1
 
-        new_board_str = ''.join(new_board)
         new_cars = [*self.cars]
         new_cars[idx] = (letter, x, y, orientation, length)
         action = (letter, direction, idx)
         new_cost, cursor = self.get_cost(car, direction)
 
-        Node.expanded[self.board].append((new_board_str, new_cars, action))
+        Node.expanded[self.board].append((board, new_cars, action))
 
-        if new_board_str not in Node.nodes or Node.nodes[new_board_str] >= new_cost:
-            Node.nodes[new_board_str] = new_cost
-            # yield Node(self, new_board_str, new_cars, (letter, direction), new_cost, cursor)
-            yield Node(self, new_board_str, new_cars, action, new_cost, cursor)
+        if board not in Node.nodes or Node.nodes[board] >= new_cost:
+            Node.nodes[board] = new_cost
+            yield Node(self, board, new_cars, action, new_cost, cursor)
 
 
     def get_cost(self, car, direction):
@@ -120,7 +115,7 @@ class Node:
                 new_y = y
 
         cost = self.cost
-        if self.action[0]== letter:
+        if self.action[0] == letter:
             cost += 1
         else:
             cost += 3 + abs(new_x - x) + abs(new_y - y)
@@ -142,10 +137,3 @@ class Node:
         Compare nodes
         """
         return self.cost < other.cost
-
-
-    def __str__(self):
-        """
-        Print node
-        """
-        return f'Board: {self.board}'
