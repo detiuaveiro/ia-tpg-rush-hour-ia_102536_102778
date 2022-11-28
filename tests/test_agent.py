@@ -29,12 +29,12 @@ async def main(level=0, store= False):
             if level != 0 and level != int(line.split(" ")[0]):
                 continue
 
-            # print(f"\nLevel: {line.split(' ')[0]} -> {line.split(' ')[1]}")
+            print(f"\nLevel: {line.split(' ')[0]} -> {line.split(' ')[1]}")
 
             total_points += 2* int(line.split(' ')[2])
 
             grid_str = line.split(" ")[1]
-            size = state["dimensions"][0]
+            size = int(len(grid_str)**0.5)
             grid = get_grid(grid_str, size)
             cars = get_cars(grid)
 
@@ -43,7 +43,7 @@ async def main(level=0, store= False):
 
             agent.path[:] = []
             agent.state_buffer = []
-            agent.root = Node(None, grid_str, cars, ['x'], 0, state["cursor"])
+            agent.root = Node(None, grid_str, cars, [None], 0, state["cursor"])
             Node.nodes = {grid_str: 0}
 
             # print_grid(grid)
@@ -58,7 +58,7 @@ async def main(level=0, store= False):
             total_times += end-start
             path = agent.path
 
-            # print("Time: ", end-start)
+            print("Time: ", end-start)
             # print("Path: ", path)
             # print("Moves: ", len(path))
             
@@ -97,7 +97,7 @@ async def main(level=0, store= False):
             state["cursor"] = k_gen.cursor
  
 
-            # print("Real cost: ", cost)
+            print("Real cost: ", cost)
             total_cost += cost
 
             # Node.nodes = {grid_str: 0}

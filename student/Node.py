@@ -68,7 +68,7 @@ class Node:
             board = f"{board[:pos]}o{board[pos + 1:pos + length]}{letter}{board[pos + length + 1:]}"
             x += 1
         elif direction == 'w':
-            board = f"{board[:pos - Node.size]}{letter}{board[pos - 5:pos + length*Node.size - Node.size]}o{board[pos + length*Node.size - 5:]}"
+            board = f"{board[:pos - Node.size]}{letter}{board[pos - Node.size +1:pos + (length-1)*Node.size]}o{board[pos + (length-1)*Node.size + 1:]}"
             y -= 1
         else:
             board = f"{board[:pos]}o{board[pos + 1:pos + length*Node.size]}{letter}{board[pos + length*Node.size + 1:]}"
