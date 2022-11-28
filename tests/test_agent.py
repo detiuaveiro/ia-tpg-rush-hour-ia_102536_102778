@@ -60,7 +60,7 @@ async def main(level=0, store= False):
 
             print("Time: ", end-start)
             # print("Path: ", path)
-            # print("Moves: ", len(path))
+            print("Moves: ", len(path))
             
             k_gen = KeyGenerator(path)
 
