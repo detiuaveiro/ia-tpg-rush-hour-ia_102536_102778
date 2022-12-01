@@ -14,6 +14,8 @@ class Node:
     # board : cost
     nodes = {}
 
+    letter_2_car = {}
+
     def __init__(self, parent, board, cars, action, cost, cursor):
         """
         Node constructor
@@ -25,32 +27,34 @@ class Node:
         self.cost = cost
         self.cursor = cursor
 
+        self.heuristic = self.get_heuristic()
+
 
     def expand(self):
         """
         Expand node
         """
-        if self.board in Node.expanded:
-            for node in Node.expanded[self.board]:
-                car = self.cars[node[2][2]]
-                new_cost, cursor = self.get_cost(car, node[2][1])
-                if node[0] not in Node.nodes or Node.nodes[node[0]] >= new_cost:
-                    Node.nodes[node[0]] = new_cost
-                    yield Node(self, node[0], node[1], node[2], new_cost, cursor)
-        else:
-            Node.expanded[self.board] = []
-            for idx, car in enumerate(self.cars):
-                _, x, y, orientation, length = car
-                if orientation == 'h':
-                    if x > 0 and self.board[y * Node.size + x - 1] == 'o':
-                        yield from self.new_node(car, idx, 'a')
-                    if x + length < Node.size and self.board[y * Node.size + x + length] == 'o':
-                        yield from self.new_node(car, idx, 'd')
-                else:
-                    if y > 0 and self.board[(y - 1) * Node.size + x] == 'o':
-                        yield from self.new_node(car, idx, 'w')
-                    if y + length < Node.size and self.board[(y + length) * Node.size + x] == 'o':
-                        yield from self.new_node(car, idx, 's')
+        # if self.board in Node.expanded:
+        #     for node in Node.expanded[self.board]:
+        #         car = self.cars[node[2][2]]
+        #         new_cost, cursor = self.get_cost(car, node[2][1])
+        #         if node[0] not in Node.nodes or Node.nodes[node[0]] >= new_cost:
+        #             Node.nodes[node[0]] = new_cost
+        #             yield Node(self, node[0], node[1], node[2], new_cost, cursor)
+        # else:
+        #     Node.expanded[self.board] = []
+        for idx, car in enumerate(self.cars):
+            _, x, y, orientation, length = car
+            if orientation == 'h':
+                if x > 0 and self.board[y * Node.size + x - 1] == 'o':
+                    yield from self.new_node(car, idx, 'a')
+                if x + length < Node.size and self.board[y * Node.size + x + length] == 'o':
+                    yield from self.new_node(car, idx, 'd')
+            else:
+                if y > 0 and self.board[(y - 1) * Node.size + x] == 'o':
+                    yield from self.new_node(car, idx, 'w')
+                if y + length < Node.size and self.board[(y + length) * Node.size + x] == 'o':
+                    yield from self.new_node(car, idx, 's')
 
 
     def new_node(self, car, idx, direction):
@@ -79,9 +83,9 @@ class Node:
         action = (letter, direction, idx)
         new_cost, cursor = self.get_cost(car, direction)
 
-        Node.expanded[self.board].append((board, new_cars, action))
+        # Node.expanded[self.board].append((board, new_cars, action))
 
-        if board not in Node.nodes or Node.nodes[board] >= new_cost:
+        if board not in Node.nodes or Node.nodes[board] > new_cost:
             Node.nodes[board] = new_cost
             yield Node(self, board, new_cars, action, new_cost, cursor)
 
@@ -132,8 +136,36 @@ class Node:
         return cost, (new_x, new_y)
 
 
+    def get_heuristic(self):
+        """
+        Get heuristic
+        """
+        # if Node.size <= 6:
+        #     return 0
+
+        _, x, y, _, length = self.cars[0]
+
+        pos = y * Node.size + x + length
+        blocking_cars = 0
+        for idx in range(pos, (y+1) * Node.size):
+            letter = self.board[idx]
+            if letter != 'o':
+                _, car_x, car_y, _, car_length = Node.letter_2_car[letter]
+                blocking_cars += car_length
+                car_pos = car_y * Node.size + car_x
+                if car_pos - Node.size >= 0 and self.board[car_pos - Node.size] == 'o':
+                    blocking_cars += 1
+                elif car_pos + car_length * Node.size < Node.size * Node.size and self.board[car_pos + car_length * Node.size] == 'o':
+                    blocking_cars += 1
+                else:
+                    blocking_cars += 2
+
+        return blocking_cars*4
+
+
+
     def __lt__(self, other):
         """
         Compare nodes
         """
-        return self.cost < other.cost
+        return self.cost + self.heuristic < other.cost + other.heuristic

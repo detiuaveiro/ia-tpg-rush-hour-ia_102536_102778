@@ -80,7 +80,7 @@ class RandomCounter:
             # else, the car got stuck bc of the random move
 
             # at game speed 10 and random 10 is better to recalculate the path
-            return False
+            # return False
 
             if self.random_move is None:
                 return False

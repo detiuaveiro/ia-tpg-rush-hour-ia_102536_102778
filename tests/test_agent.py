@@ -23,7 +23,11 @@ async def main(level=0, store= False):
     total_times=0
     total_cost = 0
     total_points = 0
-    with open("levels.txt") as f:
+
+    # file_path = 'levels.txt'
+    file_path = 'tests/new_levels.txt'
+
+    with open(file_path) as f:
         for line in f:
             
             if level != 0 and level != int(line.split(" ")[0]):
@@ -40,6 +44,7 @@ async def main(level=0, store= False):
 
             Node.expanded = {}
             Node.size = size
+            Node.letter_2_car = {car[0]: car for car in cars}
 
             agent.path[:] = []
             agent.state_buffer = []
@@ -47,6 +52,9 @@ async def main(level=0, store= False):
             Node.nodes = {grid_str: 0}
 
             # print_grid(grid)
+            # print(agent.root.heuristic)
+            # continue
+
 
             start = time.time()
             agent.solve()
@@ -110,7 +118,7 @@ async def main(level=0, store= False):
     # if store:
     #     k_file.close()
 
-    print("Total Time: ", total_times)
+    print("\nTotal Time: ", total_times)
     print("Total Cost: ", total_cost)
     print("Total points: ", total_points)
     print("Max points: ", total_points-total_cost)
