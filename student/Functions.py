@@ -64,13 +64,6 @@ def get_cars(grid):
     return cars_
 
 
-def test_win(car, pos):
-    """
-    Check if the board is solved
-    """
-    return car[1] == pos
-
-
 def get_path(node):
     """
     Get path from root to node

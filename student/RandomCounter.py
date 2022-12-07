@@ -44,6 +44,7 @@ class RandomCounter:
         """
         Check if the path is valid and if not try to fix it
         """
+        win_pos = self.cars[0][2]
         # map the reverse direction
         reverse = {'a': 'd', 'd': 'a', 'w': 's', 's': 'w'}
 
@@ -80,7 +81,7 @@ class RandomCounter:
             # else, the car got stuck bc of the random move
 
             # at game speed 10 and random 10 is better to recalculate the path
-            # return False
+            return False
 
             if self.random_move is None:
                 return False
@@ -91,7 +92,7 @@ class RandomCounter:
             self.random_move = None 
 
         # check if it worked
-        if test_win(self.cars[0], self.size - 2):
+        if self.grid[win_pos][self.size-1] == 'A':
             # if self.random_move is not None:
             #     print(f"Fix: do nothing")
 

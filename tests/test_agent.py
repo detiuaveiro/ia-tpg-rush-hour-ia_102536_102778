@@ -24,8 +24,9 @@ async def main(level=0, store= False):
     total_cost = 0
     total_points = 0
 
-    # file_path = 'levels.txt'
-    file_path = 'tests/new_levels.txt'
+    file_path = 'levels.txt'
+    # file_path = 'tests/new_levels.txt'
+    # file_path = 'tests/levels1000.txt'
 
     with open(file_path) as f:
         for line in f:
@@ -33,7 +34,7 @@ async def main(level=0, store= False):
             if level != 0 and level != int(line.split(" ")[0]):
                 continue
 
-            print(f"\nLevel: {line.split(' ')[0]} -> {line.split(' ')[1]}")
+            # print(f"\nLevel: {line.split(' ')[0]} -> {line.split(' ')[1]}")
 
             total_points += 2* int(line.split(' ')[2])
 
@@ -66,9 +67,9 @@ async def main(level=0, store= False):
             total_times += end-start
             path = agent.path
 
-            print("Time: ", end-start)
+            # print("Time: ", end-start)
             # print("Path: ", path)
-            print("Moves: ", len(path))
+            # print("Moves: ", len(path))
             
             k_gen = KeyGenerator(path)
 
@@ -105,7 +106,7 @@ async def main(level=0, store= False):
             state["cursor"] = k_gen.cursor
  
 
-            print("Real cost: ", cost)
+            # print("Real cost: ", cost)
             total_cost += cost
 
             # Node.nodes = {grid_str: 0}

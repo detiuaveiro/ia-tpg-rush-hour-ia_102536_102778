@@ -31,7 +31,7 @@ class Agent:
         """
         if self.level is None or self.level != state["level"]:
             self.level = state["level"]
-            print(f"Level: {self.level}")
+            # print(f"Level: {self.level}")
             Node.expanded = {}
             Node.size = state["dimensions"][0]
             self.solve_setup(state)
@@ -77,14 +77,10 @@ class Agent:
         while self.state_buffer != []:  
             new_grid_str = self.state_buffer.pop(0)
             grid_str = str(self.key_gen)
-
             if new_grid_str == grid_str:
                 continue
-
             self.key_gen.update(state)
-
             res = self.random_counter.update_path(grid_str, new_grid_str, Node.size)
-
             if not res:
                 self.solve_setup(state)
                 return
@@ -94,16 +90,16 @@ class Agent:
         """
         Solve
         """
-        win_pos = Node.size - 2
+        win_pos = Node.size * (self.root.cars[0][2]+1) -1
         open_nodes = [self.root]
 
         while True:
             node = heappop(open_nodes)
 
-            if Node.nodes[node.board] != node.cost:
-                continue
+            # if Node.nodes[node.board] != node.cost:
+            #     continue
 
-            if test_win(node.cars[0], win_pos):
+            if node.board[win_pos] == 'A':
                 self.path[:] = get_path(node)
                 return
             for new_node in node.expand():
