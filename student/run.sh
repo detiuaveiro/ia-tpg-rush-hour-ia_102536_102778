@@ -14,7 +14,7 @@ function main()
         echo "  -h  Show this help message and exit"
         echo "  -m  Play manually"
         echo "  -v  Play without viewer"
-        echo "  -t  Play with theoretical keys calculated"
+        # echo "  -t  Play with theoretical keys calculated"
         # echo "  -e  Play extreme mode"
         exit 0
     fi
@@ -23,7 +23,7 @@ function main()
     source venv/bin/activate
 
     # delete highscores file
-    rm -f ./highscores.json
+    # rm -f ./highscores.json
 
     # run the game
     play $1 >/dev/null 2>&1
@@ -51,14 +51,14 @@ function play()
     fi
 
     # play with theoretical keys calculated
-    if [[ $1 == "-t" ]]
-    then
-        gnome-terminal \
-        --tab -t "Server" -e "bash -c 'python3 server.py; exec bash'" \
-        --tab -t "Viewer" -e "bash -c 'python3 viewer.py; exec bash'" \
-        --tab -t "Client" -e "bash -c 'sleep 1; python3 tests/theoretical_max.py; exec bash'" 
-        exit 0
-    fi
+    # if [[ $1 == "-t" ]]
+    # then
+    #     gnome-terminal \
+    #     --tab -t "Server" -e "bash -c 'python3 server.py; exec bash'" \
+    #     --tab -t "Viewer" -e "bash -c 'python3 viewer.py; exec bash'" \
+    #     --tab -t "Client" -e "bash -c 'sleep 1; python3 tests/theoretical_max.py; exec bash'" 
+    #     exit 0
+    # fi
 
     # play extreme mode
     # if [[ $1 == "-e" ]]

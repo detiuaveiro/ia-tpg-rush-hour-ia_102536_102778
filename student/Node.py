@@ -38,7 +38,7 @@ class Node:
             for node in Node.expanded[self.board]:
                 car = self.cars[node[2][2]]
                 new_cost, cursor = self.get_cost(car, node[2][1])
-                if node[0] not in Node.nodes or Node.nodes[node[0]] >= new_cost:
+                if node[0] not in Node.nodes or Node.nodes[node[0]] > new_cost:
                     Node.nodes[node[0]] = new_cost
                     yield Node(self, node[0], node[1], node[2], new_cost, cursor)
         else:
@@ -85,7 +85,7 @@ class Node:
 
         Node.expanded[self.board].append((board, new_cars, action))
 
-        if board not in Node.nodes or Node.nodes[board] >= new_cost:
+        if board not in Node.nodes or Node.nodes[board] > new_cost:
             Node.nodes[board] = new_cost
             yield Node(self, board, new_cars, action, new_cost, cursor)
 
@@ -147,10 +147,10 @@ class Node:
         val = 0
         for pos in range(y * Node.size + x + length, (y+1) * Node.size):
             letter = self.board[pos]
-            val += 1
+            val += 0.9
             if letter != 'o':
                 _, car_x, car_y, _, car_length = Node.letter_2_car[letter]
-                val += 1 
+                val += 1
                 car_pos = car_y * Node.size + car_x
                 if car_pos - Node.size >= 0 and self.board[car_pos - Node.size] == 'o':
                     val += 1

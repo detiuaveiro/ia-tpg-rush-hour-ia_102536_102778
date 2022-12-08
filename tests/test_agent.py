@@ -22,8 +22,8 @@ async def main(level=0):
     total_points = 0
     total_moves = 0
 
-    # file_path = 'levels.txt'
-    file_path = 'tests/new_levels.txt'
+    file_path = 'levels.txt'
+    # file_path = 'tests/new_levels.txt'
     # file_path = 'tests/levels1000.txt'
 
     with open(file_path) as f:
