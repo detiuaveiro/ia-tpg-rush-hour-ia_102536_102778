@@ -150,7 +150,7 @@ class Node:
             val += 1
             if letter != 'o':
                 _, car_x, car_y, _, car_length = Node.letter_2_car[letter]
-                val += 2 + car_length
+                val += 1 
                 car_pos = car_y * Node.size + car_x
                 if car_pos - Node.size >= 0 and self.board[car_pos - Node.size] == 'o':
                     val += 1
@@ -158,7 +158,7 @@ class Node:
                     val += 1
                 else :
                     val += 2
-        return val
+        return val*4
 
 
     def __lt__(self, other):
